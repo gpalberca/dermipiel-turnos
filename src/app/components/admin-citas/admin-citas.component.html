@@ -1,0 +1,78 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1>🗓️ Panel de Administración</h1>
+    <p>Gestiona todas las citas de Dermipiel</p>
+  </div>
+
+  @if (cargando()) {
+    <div class="cargando">Cargando citas...</div>
+  }
+
+  @if (!cargando() && citas().length === 0) {
+    <div class="sin-citas">
+      <p>📭 No hay citas registradas aún.</p>
+    </div>
+  }
+
+  @if (!cargando() && citas().length > 0) {
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-num">{{ citas().length }}</span>
+        <span class="stat-label">Total citas</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">{{ citas().length - citasCanceladas() }}</span>
+        <span class="stat-label">Pendientes</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">{{ citasCanceladas() }}</span>
+        <span class="stat-label">Canceladas</span>
+      </div>
+    </div>
+
+    <div class="tabla-container">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Paciente</th>
+            <th>Contacto</th>
+            <th>Tratamiento</th>
+            <th>Fecha y Hora</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of citas(); track c.id) {
+            <tr>
+              <td>{{ c.id }}</td>
+              <td><strong>{{ c.nombre_paciente }}</strong></td>
+              <td>
+                <span>{{ c.email }}</span><br>
+                <span>{{ c.telefono }}</span>
+              </td>
+              <td>
+                {{ c.tratamiento_nombre }}<br>
+                <small>{{ c.duracion_minutos }} min</small>
+              </td>
+              <td>{{ formatFecha(c.fecha_hora) }}</td>
+              <td>
+                <span [class]="'badge ' + getBadgeClass(c.estado!)">
+                  {{ c.estado }}
+                </span>
+              </td>
+              <td>
+                @if (c.estado === 'pendiente') {
+                  <button class="btn-cancelar" (click)="cancelar(c.id!)">
+                    Cancelar
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

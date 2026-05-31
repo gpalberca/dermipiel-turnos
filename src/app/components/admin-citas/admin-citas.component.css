@@ -1,0 +1,109 @@
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.admin-header {
+  margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+  font-size: 1.8rem;
+  color: #2d6a4f;
+  margin-bottom: 0.3rem;
+}
+
+.admin-header p { color: #888; }
+
+.stats-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat {
+  background: white;
+  border-radius: 12px;
+  padding: 1.2rem 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  text-align: center;
+  border-top: 3px solid #52b788;
+}
+
+.stat-num {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #2d6a4f;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.tabla-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: linear-gradient(135deg, #2d6a4f, #52b788);
+  color: white;
+}
+
+th {
+  padding: 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+td {
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+td small { color: #999; }
+
+tbody tr:hover { background: #f8fffe; }
+
+.badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge-pendiente { background: #fff3cd; color: #856404; }
+.badge-cancelada { background: #f8d7da; color: #842029; }
+.badge-confirmada { background: #d1e7dd; color: #0f5132; }
+
+.btn-cancelar {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: opacity 0.3s;
+}
+
+.btn-cancelar:hover { opacity: 0.8; }
+
+.cargando, .sin-citas {
+  text-align: center;
+  padding: 3rem;
+  color: #888;
+}

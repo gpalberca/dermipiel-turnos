@@ -1,0 +1,30 @@
+<div class="hero">
+  <div class="hero-content">
+    <h1>Bienvenido a <span>Dermipiel</span></h1>
+    <p>Especialistas en tratamientos para el cuidado y salud de tu piel</p>
+    <a routerLink="/agendar" class="btn-primary">Agendar una Cita</a>
+  </div>
+</div>
+
+<section class="tratamientos">
+  <h2>Nuestros Tratamientos</h2>
+
+  @if (cargando()) {
+    <div class="cargando"><p>Cargando tratamientos...</p></div>
+  } @else {
+    <div class="cards-grid">
+      @for (t of tratamientos(); track t.id) {
+        <div class="card">
+          <div class="card-icon">✨</div>
+          <h3>{{ t.nombre }}</h3>
+          <p>{{ t.descripcion }}</p>
+          <div class="card-footer">
+            <span class="duracion">⏱ {{ t.duracion_minutos }} min</span>
+            <span class="precio">${{ t.precio }}</span>
+          </div>
+          <a routerLink="/agendar" class="btn-card">Agendar</a>
+        </div>
+      }
+    </div>
+  }
+</section>
