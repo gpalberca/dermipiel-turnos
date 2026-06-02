@@ -1,0 +1,41 @@
+yaml
+name: Despliegue Automático Angular - Dermipiel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar el código del repositorio
+      - name: Checkout de código
+        uses: actions/checkout@v4
+
+      # 2. Configurar el entorno de Node.js
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Instalar dependencias y compilar la aplicación en modo producción
+      - name: Instalar y compilar app
+        run: |
+          npm install
+          npm run build -- --configuration=production
+
+      # 4. Transferir los archivos compilados al servidor
+      - name: Desplegar archivos en el servidor
+        uses: AEnterprise/rsync-deploy@v1.0.2
+        env:
+          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SERVER_PORT: "22"
+          FOLDER: "dist/"
+          SERVER_IP: ${{ secrets.SERVER_HOST }}
+          USERNAME: ${{ secrets.SERVER_USER }}
+          SERVER_DESTINATION: "/opt/dermipiel/angular-dist/"
