@@ -1,9 +1,10 @@
 ARG NODE_VERSION=20-alpine
 FROM node:${NODE_VERSION} AS dev
 ENV NODE_ENV=development
+ENV CHOKIDAR_USEPOLLING=true
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm install
 COPY . .
 EXPOSE 4200
-CMD ["npm", "start", "--", "--host=0.0.0.0"]
+CMD ["npm", "start", "--", "--host=0.0.0.0", "--poll=2000"]

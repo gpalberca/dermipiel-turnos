@@ -8,6 +8,8 @@ export interface Tratamiento {
   descripcion: string;
   duracion_minutos: number;
   precio: number;
+  imagen_url?: string;
+  etiqueta?: string;
 }
 
 @Injectable({ providedIn: 'root' })

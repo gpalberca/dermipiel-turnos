@@ -1,56 +1,68 @@
-<div class="page-container">
-  <div class="form-card">
-    <div class="form-header">
-      <h1>📅 Agendar Cita</h1>
-      <p>Completa el formulario y nos pondremos en contacto contigo</p>
-    </div>
+<div class="dp dp-ag-page">
+
+  <div class="dp-ag-header">
+    <span class="dp-tag">Dermipiel · Reservas</span>
+    <h1 class="dp-h1">Agenda tu <em>cita</em></h1>
+    <div class="dp-line" style="margin:18px auto 20px"></div>
+    <p class="dp-body">Completa el formulario y nos pondremos en contacto para confirmar tu reserva.</p>
+  </div>
+
+  <div class="dp-ag-wrap">
 
     @if (exito()) {
-      <div class="alert-exito">
-        ✅ ¡Cita agendada exitosamente! Pronto te contactaremos para confirmar.
-        <a routerLink="/">Volver al inicio</a>
+      <div class="dp-ag-exito">
+        <span class="dp-tag">Reserva confirmada</span>
+        <h2 class="dp-h2">¡Cita agendada!</h2>
+        <p class="dp-body">Pronto te contactaremos para confirmar los detalles de tu reserva.</p>
+        <a class="dp-btn" routerLink="/">Volver al inicio</a>
       </div>
     }
 
     @if (error()) {
-      <div class="alert-error">⚠️ {{ error() }}</div>
+      <div class="dp-ag-error dp-body">{{ error() }}</div>
     }
 
     @if (!exito()) {
-      <div class="form-group">
-        <label>Nombre completo *</label>
-        <input type="text" [(ngModel)]="cita.nombre_paciente" placeholder="Tu nombre completo" />
-      </div>
+      <div class="dp-ag-form">
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" [(ngModel)]="cita.email" placeholder="tu@email.com" />
+        <div class="dp-field">
+          <label>Nombre completo <span class="dp-required">*</span></label>
+          <input type="text" [(ngModel)]="cita.nombre_paciente" placeholder="Tu nombre completo" />
         </div>
-        <div class="form-group">
-          <label>Teléfono</label>
-          <input type="tel" [(ngModel)]="cita.telefono" placeholder="+593 99 999 9999" />
+
+        <div class="dp-field-row">
+          <div class="dp-field">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="cita.email" placeholder="tu@email.com" />
+          </div>
+          <div class="dp-field">
+            <label>Teléfono</label>
+            <input type="tel" [(ngModel)]="cita.telefono" placeholder="+593 99 999 9999" />
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label>Tratamiento *</label>
-        <select [(ngModel)]="cita.tratamiento_id">
-          <option [value]="0">Selecciona un tratamiento</option>
-          @for (t of tratamientos(); track t.id) {
-            <option [value]="t.id">{{ t.nombre }} — ${{ t.precio }} ({{ t.duracion_minutos }} min)</option>
-          }
-        </select>
-      </div>
+        <div class="dp-field">
+          <label>Tratamiento <span class="dp-required">*</span></label>
+          <select [(ngModel)]="cita.tratamiento_id">
+            <option [value]="0">Selecciona un tratamiento</option>
+            @for (t of tratamientos(); track t.id) {
+              <option [value]="t.id">{{ t.nombre }} — ${{ t.precio }} ({{ t.duracion_minutos }} min)</option>
+            }
+          </select>
+        </div>
 
-      <div class="form-group">
-        <label>Fecha y hora *</label>
-        <input type="datetime-local" [(ngModel)]="cita.fecha_hora" />
-      </div>
+        <div class="dp-field">
+          <label>Fecha y hora <span class="dp-required">*</span></label>
+          <input type="datetime-local" [(ngModel)]="cita.fecha_hora" />
+        </div>
 
-      <button class="btn-submit" (click)="enviarCita()" [disabled]="enviando()">
-        {{ enviando() ? 'Agendando...' : 'Confirmar Cita' }}
-      </button>
+        <button class="dp-btn dp-btn-full" (click)="enviarCita()" [disabled]="enviando()">
+          {{ enviando() ? 'Agendando...' : 'Confirmar cita' }}
+        </button>
+
+      </div>
     }
+
   </div>
+
 </div>

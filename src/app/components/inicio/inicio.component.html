@@ -1,30 +1,104 @@
-<div class="hero">
-  <div class="hero-content">
-    <h1>Bienvenido a <span>Dermipiel</span></h1>
-    <p>Especialistas en tratamientos para el cuidado y salud de tu piel</p>
-    <a routerLink="/agendar" class="btn-primary">Agendar una Cita</a>
+<div class="dp">
+
+  <!-- HERO -->
+  <div style="background:var(--crema);padding:0 48px">
+    <div class="dp-hero">
+      <div class="dp-hero-left">
+        <div class="dp-hero-eyebrow">
+          <span style="width:36px;height:1.5px;background:var(--azul);display:inline-block"></span>
+          <span class="dp-tag">Dermipiel · Loja, Ecuador</span>
+        </div>
+        <h1 class="dp-h1" style="margin-bottom:22px">Una piel <em>sana</em>,<br>nuestro compromiso</h1>
+        <p class="dp-body" style="max-width:400px;margin-bottom:44px">
+          Libre de impurezas. Tratamientos con tecnología láser de última generación y protocolos personalizados para cada tipo de piel, en el corazón de Loja.
+        </p>
+        <div class="dp-hero-actions">
+          <a class="dp-btn" routerLink="/agendar">Reservar cita</a>
+          <a class="dp-btn-outline" routerLink="/agendar">Ver tratamientos</a>
+        </div>
+      </div>
+      <div class="dp-hero-right">
+        <img src="https://dermipiel.ec/wp-content/uploads/2026/05/WhatsApp-Image-2026-05-16-at-3.40.56-PM-1.jpeg"
+             alt="Dermipiel tratamiento"
+             style="width:100%;height:88vh;object-fit:cover;" />
+      </div>
+    </div>
   </div>
-</div>
 
-<section class="tratamientos">
-  <h2>Nuestros Tratamientos</h2>
+  <!-- STATS -->
+  <div style="background:var(--crema);padding:0 48px">
+    <div class="dp-stats">
+      <div class="dp-stat">
+        <div class="sn">500<sup>+</sup></div>
+        <div class="sl">Pacientes atendidos</div>
+      </div>
+      <div class="dp-stat">
+        <div class="sn">8</div>
+        <div class="sl">Años de experiencia</div>
+      </div>
+      <div class="dp-stat">
+        <div class="sn">4</div>
+        <div class="sl">Tratamientos especializados</div>
+      </div>
+      <div class="dp-stat">
+        <div class="sn">98<sup>%</sup></div>
+        <div class="sl">Satisfacción</div>
+      </div>
+    </div>
+  </div>
 
-  @if (cargando()) {
-    <div class="cargando"><p>Cargando tratamientos...</p></div>
-  } @else {
-    <div class="cards-grid">
-      @for (t of tratamientos(); track t.id) {
-        <div class="card">
-          <div class="card-icon">✨</div>
-          <h3>{{ t.nombre }}</h3>
-          <p>{{ t.descripcion }}</p>
-          <div class="card-footer">
-            <span class="duracion">⏱ {{ t.duracion_minutos }} min</span>
-            <span class="precio">${{ t.precio }}</span>
-          </div>
-          <a routerLink="/agendar" class="btn-card">Agendar</a>
+  <!-- TRATAMIENTOS -->
+  <div style="background:var(--crema);padding:0 48px">
+    <div class="dp-trat-wrap">
+      <div class="dp-trat-head">
+        <div>
+          <span class="dp-tag">Nuestros tratamientos</span>
+          <h2 class="dp-h2">Descubre nuestra<br><em>experiencia</em></h2>
+          <div class="dp-line"></div>
+          <p class="dp-body">Ofrecemos tratamientos de vanguardia diseñados para transformar tu piel con resultados visibles desde la primera sesión.</p>
+        </div>
+        <div class="dp-trat-head-right">
+          <a class="dp-btn-outline" routerLink="/agendar">Ver todos los tratamientos</a>
+        </div>
+      </div>
+
+      @if (cargando()) {
+        <p class="dp-body" style="padding:2rem 0">Cargando tratamientos...</p>
+      } @else {
+        <div class="dp-grid">
+          @for (t of tratamientos(); track t.id; let i = $index) {
+            <div class="dp-card">
+              <div class="dp-card-img">
+                <img [src]="getImagen(t, i)" [alt]="t.nombre" />
+                @if (getPill(t); as pill) {
+                  <span class="dp-card-pill" [class]="pill.clase">{{ pill.texto }}</span>
+                }
+              </div>
+              <div class="dp-card-body">
+                <h4>{{ t.nombre }}</h4>
+                <p class="dp-body">{{ t.descripcion }}</p>
+                <div class="dp-card-meta">
+                  <span class="dp-meta-dur">⏱ {{ t.duracion_minutos }} min</span>
+                  <span class="dp-meta-precio">${{ t.precio }}</span>
+                </div>
+                <a class="dp-btn" routerLink="/agendar">Reservar cita</a>
+              </div>
+            </div>
+          }
         </div>
       }
     </div>
-  }
-</section>
+  </div>
+
+  <!-- CTA BAR -->
+  <div style="background:var(--crema);padding:80px 48px">
+    <div class="dp-cta-bar">
+      <div>
+        <h3>¿Lista para una piel <em>renovada</em>?</h3>
+        <p>Agenda tu cita hoy y recibe una evaluación personalizada sin costo.</p>
+      </div>
+      <a class="dp-btn-white" routerLink="/agendar">Reservar ahora</a>
+    </div>
+  </div>
+
+</div>

@@ -1,119 +1,30 @@
-.hero {
-  background: linear-gradient(135deg, #2d6a4f 0%, #52b788 50%, #95d5b2 100%);
-  padding: 5rem 2rem;
-  text-align: center;
-  color: white;
+.dp-hero-right {
+  overflow: hidden;
 }
 
-.hero-content h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
+.dp-nav-brand {
+  cursor: pointer;
 }
 
-.hero-content h1 span {
-  color: #d8f3dc;
-}
+/* Pill color variants */
+.dp-card-pill.pill-popular  { background: var(--azul); }
+.dp-card-pill.pill-info     { background: #2a9d8f; }
+.dp-card-pill.pill-premium  { background: #b07d3a; }
+.dp-card-pill.pill-especial { background: #6b48a8; }
 
-.hero-content p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
-}
-
-.btn-primary {
-  background: white;
-  color: #2d6a4f;
-  padding: 0.9rem 2.5rem;
-  border-radius: 30px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 1rem;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.tratamientos {
-  padding: 4rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.tratamientos h2 {
-  text-align: center;
-  font-size: 2rem;
-  color: #2d6a4f;
-  margin-bottom: 2.5rem;
-}
-
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-
-.card {
-  background: white;
-  border-radius: 16px;
-  padding: 1.8rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  transition: transform 0.3s;
-  border-top: 4px solid #52b788;
-}
-
-.card:hover { transform: translateY(-5px); }
-
-.card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-
-.card h3 {
-  font-size: 1.1rem;
-  color: #2d6a4f;
-  margin-bottom: 0.5rem;
-}
-
-.card p {
-  color: #666;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 1rem;
-}
-
-.card-footer {
+/* Card meta row */
+.dp-card-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 18px;
 }
-
-.duracion { color: #888; font-size: 0.85rem; }
-
-.precio {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #2d6a4f;
+.dp-meta-dur {
+  font-size: .8rem;
+  color: var(--gris);
 }
-
-.btn-card {
-  display: block;
-  text-align: center;
-  background: linear-gradient(135deg, #2d6a4f, #52b788);
-  color: white;
-  padding: 0.6rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: opacity 0.3s;
-}
-
-.btn-card:hover { opacity: 0.85; }
-
-.cargando {
-  text-align: center;
-  color: #888;
-  padding: 3rem;
+.dp-meta-precio {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--azul);
 }
