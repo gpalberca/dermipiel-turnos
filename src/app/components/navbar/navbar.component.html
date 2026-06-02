@@ -6,5 +6,8 @@
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
     <a routerLink="/agendar" routerLinkActive="active">Agendar Cita</a>
     <a routerLink="/admin" routerLinkActive="active">Administración</a>
+    @if (auth.isLoggedIn()) {
+      <button class="dp-nav-logout" (click)="auth.logout()">Cerrar sesión</button>
+    }
   </div>
 </nav>

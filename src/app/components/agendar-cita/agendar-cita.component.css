@@ -69,6 +69,60 @@
   gap: 20px;
 }
 
+.dp-selected-card {
+  background: #f7fbff;
+  border: 1px solid rgba(44, 133, 255, .16);
+  padding: 22px 24px;
+  margin-bottom: 22px;
+  border-radius: 16px;
+}
+
+.dp-selected-card h3 {
+  margin: 12px 0 10px;
+}
+
+.dp-selected-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--carbon);
+  font-size: .95rem;
+}
+
+.dp-time-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dp-time-slot {
+  min-height: 46px;
+  border: 1px solid var(--borde);
+  background: var(--crema);
+  color: var(--carbon);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: .92rem;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.dp-time-slot:hover {
+  border-color: var(--azul);
+  background: #eef5ff;
+}
+
+.dp-time-slot.active {
+  background: var(--azul);
+  border-color: var(--azul);
+  color: #ffffff;
+}
+
+.dp-selected-time input {
+  cursor: not-allowed;
+  background: var(--crema);
+}
+
 /* Submit button */
 .dp-btn-full {
   width: 100%;

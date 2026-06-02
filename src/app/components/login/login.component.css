@@ -1,0 +1,100 @@
+.dp-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: var(--crema);
+}
+
+.dp-login-wrap {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.dp-login-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--carbon);
+  text-decoration: none;
+  letter-spacing: .04em;
+}
+
+.dp-login-brand em {
+  font-style: italic;
+  color: var(--azul);
+}
+
+.dp-login-card {
+  width: 100%;
+  background: var(--blanco);
+  border: 1px solid var(--borde2);
+  padding: 48px 40px 40px;
+}
+
+/* Reuse dp-field styles (defined globally via .dp scope) */
+.dp-field {
+  margin-bottom: 20px;
+}
+
+.dp-field label {
+  display: block;
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--carbon);
+  margin-bottom: 8px;
+}
+
+.dp-field input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--borde);
+  background: var(--crema);
+  font-family: 'Inter', sans-serif;
+  font-size: .88rem;
+  color: var(--carbon);
+  outline: none;
+  transition: border-color .25s, background .25s;
+}
+
+.dp-field input:focus {
+  border-color: var(--azul);
+  background: var(--blanco);
+}
+
+.dp-btn-full {
+  width: 100%;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 24px;
+}
+
+.dp-btn-full:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.dp-login-error {
+  background: #fff0f0;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: .84rem;
+}
+
+.dp-login-back {
+  display: block;
+  text-align: center;
+  width: 100%;
+  justify-content: center;
+}

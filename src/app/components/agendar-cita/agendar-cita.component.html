@@ -25,6 +25,18 @@
     @if (!exito()) {
       <div class="dp-ag-form">
 
+        @if (tratamientoSeleccionado) {
+          <div class="dp-selected-card">
+            <span class="dp-tag">Tratamiento seleccionado</span>
+            <h3>{{ tratamientoSeleccionado.nombre }}</h3>
+            <p class="dp-body">{{ tratamientoSeleccionado.descripcion }}</p>
+            <div class="dp-selected-meta">
+              <span>⏱ {{ tratamientoSeleccionado.duracion_minutos }} min</span>
+              <span>${{ tratamientoSeleccionado.precio }}</span>
+            </div>
+          </div>
+        }
+
         <div class="dp-field">
           <label>Nombre completo <span class="dp-required">*</span></label>
           <input type="text" [(ngModel)]="cita.nombre_paciente" placeholder="Tu nombre completo" />
@@ -43,7 +55,7 @@
 
         <div class="dp-field">
           <label>Tratamiento <span class="dp-required">*</span></label>
-          <select [(ngModel)]="cita.tratamiento_id">
+          <select [(ngModel)]="cita.tratamiento_id" (ngModelChange)="onTratamientoChange()">
             <option [value]="0">Selecciona un tratamiento</option>
             @for (t of tratamientos(); track t.id) {
               <option [value]="t.id">{{ t.nombre }} — ${{ t.precio }} ({{ t.duracion_minutos }} min)</option>
@@ -52,9 +64,28 @@
         </div>
 
         <div class="dp-field">
-          <label>Fecha y hora <span class="dp-required">*</span></label>
-          <input type="datetime-local" [(ngModel)]="cita.fecha_hora" />
+          <label>Fecha <span class="dp-required">*</span></label>
+          <input type="date" [(ngModel)]="selectedDate" (change)="onDateSelected($event.target.value)" />
         </div>
+
+        @if (selectedDate) {
+          <div class="dp-field">
+            <label>Horas disponibles <span class="dp-required">*</span></label>
+            <div class="dp-time-grid">
+              @for (hora of availableTimes; track hora) {
+                <button type="button" class="dp-time-slot" [class.active]="selectedTime === hora" (click)="elegirHora(hora)">
+                  {{ hora }}
+                </button>
+              }
+            </div>
+          </div>
+          @if (selectedTime) {
+            <div class="dp-field dp-selected-time">
+              <label>Hora elegida</label>
+              <input type="text" [value]="selectedTime" readonly />
+            </div>
+          }
+        }
 
         <button class="dp-btn dp-btn-full" (click)="enviarCita()" [disabled]="enviando()">
           {{ enviando() ? 'Agendando...' : 'Confirmar cita' }}

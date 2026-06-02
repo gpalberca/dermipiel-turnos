@@ -81,7 +81,7 @@
                   <span class="dp-meta-dur">⏱ {{ t.duracion_minutos }} min</span>
                   <span class="dp-meta-precio">${{ t.precio }}</span>
                 </div>
-                <a class="dp-btn" routerLink="/agendar">Reservar cita</a>
+                <a class="dp-btn" [routerLink]="['/agendar']" [queryParams]="{ tratamiento: t.id }">Reservar cita</a>
               </div>
             </div>
           }

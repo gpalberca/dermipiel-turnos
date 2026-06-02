@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../db');
+const auth = require('../middleware/auth');
 
-// Obtener todas las citas
-router.get('/', async (req, res) => {
+// Obtener todas las citas (protegido)
+router.get('/', auth, async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT c.*, t.nombre as tratamiento_nombre, t.duracion_minutos

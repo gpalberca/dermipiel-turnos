@@ -1,0 +1,46 @@
+<div class="dp dp-login-page">
+  <div class="dp-login-wrap">
+
+    <a class="dp-login-brand" routerLink="/">
+      Dermi<em>piel</em>
+    </a>
+
+    <div class="dp-login-card">
+      <span class="dp-tag">Acceso restringido</span>
+      <h1 class="dp-h2">Panel de<br><em>administración</em></h1>
+      <div class="dp-line"></div>
+      <p class="dp-body" style="margin-bottom:28px">Ingresa tus credenciales para continuar.</p>
+
+      @if (error()) {
+        <div class="dp-login-error dp-body">{{ error() }}</div>
+      }
+
+      <div class="dp-field">
+        <label>Usuario</label>
+        <input
+          type="text"
+          [(ngModel)]="usuario"
+          placeholder="admin"
+          (keyup.enter)="login()"
+          autocomplete="username" />
+      </div>
+
+      <div class="dp-field">
+        <label>Contraseña</label>
+        <input
+          type="password"
+          [(ngModel)]="password"
+          placeholder="••••••••"
+          (keyup.enter)="login()"
+          autocomplete="current-password" />
+      </div>
+
+      <button class="dp-btn dp-btn-full" (click)="login()" [disabled]="cargando()">
+        {{ cargando() ? 'Verificando...' : 'Ingresar' }}
+      </button>
+
+      <a class="dp-login-back dp-link" routerLink="/">Volver al inicio</a>
+    </div>
+
+  </div>
+</div>

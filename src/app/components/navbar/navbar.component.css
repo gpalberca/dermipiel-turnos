@@ -52,3 +52,22 @@
   color: var(--azul);
   border-bottom-color: var(--azul);
 }
+
+.dp-nav-logout {
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gris);
+  background: none;
+  border: 1px solid var(--borde);
+  padding: 6px 16px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: color .25s, border-color .25s;
+}
+
+.dp-nav-logout:hover {
+  color: #991b1b;
+  border-color: #fca5a5;
+}

@@ -7,6 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 // Rutas
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/tratamientos', require('./routes/tratamientos'));
 app.use('/api/citas', require('./routes/citas'));
 
