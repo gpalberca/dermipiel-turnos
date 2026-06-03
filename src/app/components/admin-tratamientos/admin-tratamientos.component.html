@@ -1,0 +1,62 @@
+<div class="dp dp-trat-admin">
+
+  <div class="dp-trat-header">
+    <span class="dp-tag">Gestión de tratamientos</span>
+    <h1 class="dp-h1">Tratamientos <em>disponibles</em></h1>
+    <div class="dp-line"></div>
+    <p class="dp-body">Administra, crea y edita todos los tratamientos de la clínica.</p>
+  </div>
+
+  @if (cargando()) {
+    <p class="dp-body">Cargando tratamientos...</p>
+  }
+
+  @if (!cargando() && tratamientos().length === 0) {
+    <p class="dp-body">No hay tratamientos registrados aún.</p>
+  }
+
+  @if (!cargando() && tratamientos().length > 0) {
+    <button class="dp-btn" (click)="abrirCrear()" style="margin-bottom: 28px;">
+      + Nuevo Tratamiento
+    </button>
+
+    <div class="dp-tabla-wrap">
+      <table class="dp-tabla">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Duración</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of tratamientos(); track t.id) {
+            <tr>
+              <td><strong>{{ t.nombre }}</strong></td>
+              <td>{{ t.descripcion }}</td>
+              <td class="dp-sub">{{ t.duracion_minutos }} min</td>
+              <td>${{ t.precio }}</td>
+              <td>
+                <button class="dp-btn-edit" (click)="abrirEditar(t)">Editar</button>
+                <button class="dp-btn-delete" (click)="eliminar(t.id)">Eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (modalAbierto()) {
+    <app-admin-modal-form
+      [titulo]="esEdicion() ? 'Editar Tratamiento' : 'Nuevo Tratamiento'"
+      [datos]="tratamientoEdicion!"
+      [cargando]="modalCargando()"
+      (guardar)="guardar($event)"
+      (cerrar)="cerrarModal()">
+    </app-admin-modal-form>
+  }
+
+</div>

@@ -1,0 +1,27 @@
+<div class="dp dp-admin-container">
+
+  <div class="dp-tab-bar">
+    <button
+      class="dp-tab-button"
+      [class.active]="activeTab() === 'citas'"
+      (click)="setTab('citas')">
+      Citas
+    </button>
+    <button
+      class="dp-tab-button"
+      [class.active]="activeTab() === 'tratamientos'"
+      (click)="setTab('tratamientos')">
+      Tratamientos
+    </button>
+  </div>
+
+  <div class="dp-tab-content">
+    @if (activeTab() === 'citas') {
+      <app-admin-citas></app-admin-citas>
+    }
+    @if (activeTab() === 'tratamientos') {
+      <app-admin-tratamientos></app-admin-tratamientos>
+    }
+  </div>
+
+</div>

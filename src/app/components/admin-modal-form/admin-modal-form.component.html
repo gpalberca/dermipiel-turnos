@@ -1,0 +1,49 @@
+<div class="dp-modal-overlay" (click)="cerrarForm()">
+  <div class="dp-modal-form" (click)="$event.stopPropagation()">
+
+    <h2 class="dp-h2" style="margin-bottom: 24px;">{{ titulo }}</h2>
+
+    <div class="dp-field">
+      <label>Nombre del tratamiento <span class="dp-required">*</span></label>
+      <input
+        type="text"
+        [(ngModel)]="formulario().nombre"
+        placeholder="ej: Depilación Láser" />
+    </div>
+
+    <div class="dp-field">
+      <label>Descripción <span class="dp-required">*</span></label>
+      <textarea
+        [(ngModel)]="formulario().descripcion"
+        placeholder="Describe el tratamiento..."
+        style="resize: vertical; min-height: 80px;"></textarea>
+    </div>
+
+    <div class="dp-field-row">
+      <div class="dp-field">
+        <label>Duración (minutos) <span class="dp-required">*</span></label>
+        <input
+          type="number"
+          [(ngModel)]="formulario().duracion_minutos"
+          placeholder="30" />
+      </div>
+      <div class="dp-field">
+        <label>Precio ($) <span class="dp-required">*</span></label>
+        <input
+          type="number"
+          [(ngModel)]="formulario().precio"
+          placeholder="0.00" />
+      </div>
+    </div>
+
+    <div class="dp-modal-buttons">
+      <button class="dp-btn" (click)="guardarForm()" [disabled]="cargando">
+        {{ cargando ? 'Guardando...' : 'Guardar' }}
+      </button>
+      <button class="dp-btn-cancel" (click)="cerrarForm()" [disabled]="cargando">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Tratamiento {
-  id: number;
+  id?: number;
   nombre: string;
   descripcion: string;
   duracion_minutos: number;
@@ -20,5 +20,17 @@ export class TratamientosService {
 
   getTratamientos(): Observable<Tratamiento[]> {
     return this.http.get<Tratamiento[]>(this.apiUrl);
+  }
+
+  crearTratamiento(tratamiento: Tratamiento): Observable<Tratamiento> {
+    return this.http.post<Tratamiento>(this.apiUrl, tratamiento);
+  }
+
+  actualizarTratamiento(id: number, tratamiento: Tratamiento): Observable<Tratamiento> {
+    return this.http.put<Tratamiento>(`${this.apiUrl}/${id}`, tratamiento);
+  }
+
+  eliminarTratamiento(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

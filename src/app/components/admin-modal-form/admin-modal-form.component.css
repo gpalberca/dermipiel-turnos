@@ -1,0 +1,130 @@
+.dp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  padding: 16px;
+}
+
+.dp-modal-form {
+  background: var(--blanco);
+  border: 1px solid var(--borde2);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 500px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.dp-field {
+  margin-bottom: 20px;
+}
+
+.dp-field label {
+  display: block;
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--carbon);
+  margin-bottom: 8px;
+}
+
+.dp-required {
+  color: var(--azul);
+}
+
+.dp-field input,
+.dp-field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--borde);
+  background: var(--crema);
+  font-family: 'Inter', sans-serif;
+  font-size: .88rem;
+  color: var(--carbon);
+  outline: none;
+  transition: border-color .25s, background .25s;
+}
+
+.dp-field input:focus,
+.dp-field textarea:focus {
+  border-color: var(--azul);
+  background: var(--blanco);
+}
+
+.dp-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dp-modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.dp-btn {
+  flex: 1;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+.dp-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.dp-btn-cancel {
+  flex: 1;
+  padding: 15px 34px;
+  font-size: .75rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--azul);
+  border: 1.5px solid var(--azul);
+  background: none;
+  cursor: pointer;
+  transition: all .3s;
+  font-family: 'Inter', sans-serif;
+}
+
+.dp-btn-cancel:hover:not(:disabled) {
+  background: var(--azul);
+  color: var(--blanco);
+}
+
+.dp-btn-cancel:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media(max-width:900px) {
+  .dp-modal-form {
+    padding: 32px 24px;
+  }
+  .dp-field-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .dp-modal-buttons {
+    flex-direction: column;
+  }
+}

@@ -1,13 +1,14 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { CitasService, Cita } from '../../services/citas.service';
 import { TratamientosService, Tratamiento } from '../../services/tratamientos.service';
 
 @Component({
   selector: 'app-agendar-cita',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './agendar-cita.component.html',
   styleUrl: './agendar-cita.component.css'
 })
@@ -58,7 +59,7 @@ export class AgendarCitaComponent implements OnInit {
         this.tratamientos.set(data);
         if (this.pendingTratamientoId) {
           this.tratamientoSeleccionado = this.tratamientos().find((t) => t.id === this.pendingTratamientoId);
-          if (this.tratamientoSeleccionado) {
+          if (this.tratamientoSeleccionado?.id) {
             this.cita.tratamiento_id = this.tratamientoSeleccionado.id;
           }
         } else {

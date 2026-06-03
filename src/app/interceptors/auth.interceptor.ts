@@ -3,9 +3,19 @@ import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = inject(AuthService).getToken();
-  if (token && req.url.includes('/api/citas')) {
-    req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+  const authService = inject(AuthService);
+  const token = authService.getToken();
+
+  // Si existe el token, clonamos la petición y le añadimos la cabecera
+  if (token) {
+    const clonedReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return next(clonedReq);
   }
+
+  // Si no hay token, la petición sigue su curso normal
   return next(req);
 };
