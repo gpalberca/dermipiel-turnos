@@ -11,6 +11,8 @@ services:
     command: npm start -- --host 0.0.0.0 --poll 2000
     depends_on:
       - backend
+    networks:
+      - turnos-network
     
   backend:
     build:
@@ -19,25 +21,41 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
+      # =====================================================================
+      # CAMBIADO: Ahora apuntamos a MariaDB en el puerto 3306
+      # =====================================================================
+      - DB_HOST=mariadb
+      - DB_PORT=3306
       - DB_NAME=dermipiel
       - DB_USER=admin
       - DB_PASSWORD=dermipiel123
     depends_on:
-      - postgres
+      - mariadb
+    networks:
+      - turnos-network
 
-  postgres:
-    image: postgres:15-alpine
+  # =====================================================================
+  # REEMPLAZADO: Postgres fuera, entra MariaDB oficial (igual a prod)
+  # =====================================================================
+  mariadb:
+    image: mariadb:10.6
     ports:
-      - "5432:5432"
+      - "3306:3306"
     environment:
-      - POSTGRES_DB=dermipiel
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=dermipiel123
+      - MYSQL_DATABASE=dermipiel
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=dermipiel123
+      - MYSQL_ROOT_PASSWORD=DermiPiel2024!
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mariadb_data:/var/lib/mysql
+      # Mantenemos tu script de inicialización automática de tablas
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - turnos-network
 
 volumes:
-  postgres_data:
+  mariadb_data:
+
+networks:
+  turnos-network:
+    driver: bridge

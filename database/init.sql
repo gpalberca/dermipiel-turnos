@@ -1,6 +1,6 @@
 -- Tabla de tratamientos
 CREATE TABLE IF NOT EXISTS tratamientos (
-  id SERIAL PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
   descripcion TEXT,
   duracion_minutos INT NOT NULL,
@@ -9,14 +9,15 @@ CREATE TABLE IF NOT EXISTS tratamientos (
 
 -- Tabla de citas
 CREATE TABLE IF NOT EXISTS citas (
-  id SERIAL PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   nombre_paciente VARCHAR(100) NOT NULL,
   email VARCHAR(100),
   telefono VARCHAR(20),
-  tratamiento_id INT REFERENCES tratamientos(id),
-  fecha_hora TIMESTAMP NOT NULL,
+  tratamiento_id INT,
+  fecha_hora DATETIME NOT NULL,
   estado VARCHAR(20) DEFAULT 'pendiente',
-  created_at TIMESTAMP DEFAULT NOW()
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (tratamiento_id) REFERENCES tratamientos(id) ON DELETE SET NULL
 );
 
 -- Datos iniciales de tratamientos
