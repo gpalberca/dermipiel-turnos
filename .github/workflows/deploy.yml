@@ -1,4 +1,4 @@
-name: Despliegue Automático Angular - Dermipiel
+name: Despliegue Automático Dermipiel
 
 on:
   push:
@@ -6,29 +6,52 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  # ─────────────────────────────────────────────
+  # JOB 1: Compilar Angular
+  # ─────────────────────────────────────────────
+  build-frontend:
     runs-on: ubuntu-latest
-
     steps:
-      # 1. Descargar el código del repositorio
       - name: Checkout de código
         uses: actions/checkout@v4
 
-      # 2. Configurar el entorno de Node.js
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      # 3. Instalar dependencias y compilar la aplicación en modo producción
       - name: Instalar y compilar app
         run: |
           npm install
           npm run build -- --configuration=production
 
-      # 4. Transferir los archivos compilados al servidor
-      - name: Desplegar archivos en el servidor
+      - name: Subir artefacto compilado
+        uses: actions/upload-artifact@v4
+        with:
+          name: angular-dist
+          path: dist/dermipiel-turnos/browser/
+          retention-days: 1
+
+  # ─────────────────────────────────────────────
+  # JOB 2: Desplegar en el servidor
+  # ─────────────────────────────────────────────
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-frontend
+
+    steps:
+      - name: Checkout de código
+        uses: actions/checkout@v4
+
+      - name: Descargar artefacto compilado
+        uses: actions/download-artifact@v4
+        with:
+          name: angular-dist
+          path: dist/dermipiel-turnos/browser/
+
+      # ── 1. Frontend estático ──────────────────
+      - name: Sincronizar Angular al servidor
         uses: AEnterprise/rsync-deploy@v1.0.2
         env:
           DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -38,3 +61,57 @@ jobs:
           SERVER_IP: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
           SERVER_DESTINATION: "/opt/dermipiel/angular-dist/"
+
+      # ── 2. Código del backend ─────────────────
+      - name: Sincronizar backend al servidor
+        uses: AEnterprise/rsync-deploy@v1.0.2
+        env:
+          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rltgoDzvO --delete --exclude=node_modules --exclude=.env"
+          SERVER_PORT: "22"
+          FOLDER: "backend/"
+          SERVER_IP: ${{ secrets.SERVER_HOST }}
+          USERNAME: ${{ secrets.SERVER_USER }}
+          SERVER_DESTINATION: "/opt/dermipiel/backend/"
+
+      # ── 3. Archivos compose ───────────────────
+      - name: Sincronizar compose y scripts
+        uses: AEnterprise/rsync-deploy@v1.0.2
+        env:
+          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rltgoDzvO"
+          SERVER_PORT: "22"
+          FOLDER: "compose.yaml"
+          SERVER_IP: ${{ secrets.SERVER_HOST }}
+          USERNAME: ${{ secrets.SERVER_USER }}
+          SERVER_DESTINATION: "/opt/dermipiel/"
+
+      # ── 4. Crear .env.prod y reiniciar ────────
+      - name: Conectar SSH y reiniciar contenedores
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /opt/dermipiel
+
+            # Escribir el .env.prod con los secrets de GitHub
+            cat > .env.prod << EOF
+            DB_HOST=${{ secrets.PROD_DB_HOST }}
+            DB_PORT=3306
+            DB_NAME=${{ secrets.PROD_DB_NAME }}
+            DB_USER=${{ secrets.PROD_DB_USER }}
+            DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}
+            NODE_ENV=production
+            EOF
+
+            # Reiniciar solo el backend (no toca WordPress ni nginx)
+            docker compose -f compose.yaml -f compose.prod.yaml \
+              --env-file .env.prod \
+              up -d --build backend
+
+            # Limpiar imágenes antiguas
+            docker image prune -f
+
+            echo "✅ Deploy completado: $(date)"

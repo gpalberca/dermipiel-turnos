@@ -1,19 +1,4 @@
 services:
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    ports:
-      - "4200:4200"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: npm start -- --host 0.0.0.0 --poll 2000
-    depends_on:
-      - backend
-    networks:
-      - turnos-network
-    
   backend:
     build:
       context: ./backend
@@ -21,40 +6,14 @@ services:
     ports:
       - "3000:3000"
     environment:
-      # =====================================================================
-      # CAMBIADO: Ahora apuntamos a MariaDB en el puerto 3306
-      # =====================================================================
-      - DB_HOST=mariadb
-      - DB_PORT=3306
-      - DB_NAME=dermipiel
-      - DB_USER=admin
-      - DB_PASSWORD=dermipiel123
-    depends_on:
-      - mariadb
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - NODE_ENV=${NODE_ENV}
     networks:
       - turnos-network
-
-  # =====================================================================
-  # REEMPLAZADO: Postgres fuera, entra MariaDB oficial (igual a prod)
-  # =====================================================================
-  mariadb:
-    image: mariadb:10.6
-    ports:
-      - "3306:3306"
-    environment:
-      - MYSQL_DATABASE=dermipiel
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=dermipiel123
-      - MYSQL_ROOT_PASSWORD=DermiPiel2024!
-    volumes:
-      - mariadb_data:/var/lib/mysql
-      # Mantenemos tu script de inicialización automática de tablas
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - turnos-network
-
-volumes:
-  mariadb_data:
 
 networks:
   turnos-network:
