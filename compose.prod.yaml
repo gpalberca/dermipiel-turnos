@@ -1,0 +1,17 @@
+# compose.prod.yaml
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - turnos-network
+      - dermipiel-network
+
+networks:
+  turnos-network:
+    driver: bridge
+  dermipiel-network:
+    external: true
+    name: dermipiel_dermipiel-network   # ← nombre real de la red
