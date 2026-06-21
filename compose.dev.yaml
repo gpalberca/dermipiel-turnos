@@ -15,6 +15,10 @@ services:
       - turnos-network
 
   backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: npx nodemon --legacy-watch src/index.js
     depends_on:
       - mariadb
 
