@@ -12,6 +12,8 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/tratamientos', require('./routes/tratamientos'));
 app.use('/api/citas', require('./routes/citas'));
 app.use('/api/disponibilidad', require('./routes/disponibilidad'));
+app.use('/api/horarios',    require('./routes/horarios'));
+app.use('/api/excepciones', require('./routes/excepciones'));
 
 // Health check
 app.get('/api/health', (req, res) => {
