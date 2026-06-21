@@ -1,78 +1,183 @@
 <div class="dp-citas-module">
-
   <div class="dp-admin-header">
     <span class="dp-tag">Panel interno</span>
     <h1 class="dp-h1">Administración <em>de citas</em></h1>
     <div class="dp-line"></div>
-    <p class="dp-body">Gestiona y cancela las reservas de los pacientes.</p>
+    <p class="dp-body">Gestiona las reservas de los pacientes.</p>
   </div>
 
   @if (cargando()) {
     <p class="dp-body dp-admin-msg">Cargando citas...</p>
   }
 
-  @if (!cargando() && citas().length === 0) {
-    <p class="dp-body dp-admin-msg">No hay citas registradas aún.</p>
-  }
+  @if (!cargando()) {
 
-  @if (!cargando() && citas().length > 0) {
-
-    <div class="dp-stats dp-admin-stats">
-      <div class="dp-stat">
-        <div class="sn">{{ citas().length }}</div>
-        <div class="sl">Total citas</div>
-      </div>
-      <div class="dp-stat">
-        <div class="sn">{{ citas().length - citasCanceladas() }}</div>
-        <div class="sl">Pendientes</div>
-      </div>
-      <div class="dp-stat">
-        <div class="sn">{{ citasCanceladas() }}</div>
-        <div class="sl">Canceladas</div>
-      </div>
+    <!-- Stats -->
+    <div class="dp-admin-stats">
+      <div class="dp-stat"><div class="sn">{{ citas().length }}</div><div class="sl">Total</div></div>
+      <div class="dp-stat"><div class="sn">{{ citasPendientes() }}</div><div class="sl">Pendientes</div></div>
+      <div class="dp-stat"><div class="sn">{{ citasConfirmadas() }}</div><div class="sl">Confirmadas</div></div>
+      <div class="dp-stat"><div class="sn">{{ citasCompletadas() }}</div><div class="sl">Completadas</div></div>
+      <div class="dp-stat"><div class="sn">{{ citasCanceladas() }}</div><div class="sl">Canceladas</div></div>
     </div>
 
-    <div class="dp-tabla-wrap">
-      <table class="dp-tabla">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Paciente</th>
-            <th>Contacto</th>
-            <th>Tratamiento</th>
-            <th>Fecha y hora</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (c of citas(); track c.id) {
+    <!-- Toggle vista -->
+    <div class="dp-vista-toggle">
+      <button [class.active]="vista() === 'lista'"   (click)="vista.set('lista')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Lista
+      </button>
+      <button [class.active]="vista() === 'semana'" (click)="vista.set('semana')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Semana
+      </button>
+      <button [class.active]="vista() === 'mes'"    (click)="vista.set('mes')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="10" x2="9" y2="22"/><line x1="15" y1="10" x2="15" y2="22"/></svg>
+        Mes
+      </button>
+    </div>
+
+    <!-- Navegación calendario -->
+    @if (vista() !== 'lista') {
+      <div class="dp-cal-nav">
+        <button class="dp-cal-nav-btn" (click)="anterior()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="dp-cal-titulo">{{ tituloNavegacion() }}</span>
+        <button class="dp-cal-nav-btn" (click)="hoy()">Hoy</button>
+        <button class="dp-cal-nav-btn" (click)="siguiente()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    }
+
+    <!-- ── VISTA LISTA ─────────────────────────────────────── -->
+    @if (vista() === 'lista') {
+      @if (citas().length === 0) {
+        <p class="dp-body dp-admin-msg">No hay citas registradas aún.</p>
+      } @else {
+        <div class="dp-tabla-wrap">
+          <table class="dp-tabla">
+            <thead>
+              <tr>
+                <th>#</th><th>Paciente</th><th>Contacto</th>
+                <th>Tratamiento</th><th>Especialista</th>
+                <th>Fecha y hora</th><th>Precio</th>
+                <th>Notas</th><th>Estado</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of citas(); track c.id) {
+                <tr>
+                  <td>{{ c.id }}</td>
+                  <td><strong>{{ c.nombre_paciente }}</strong></td>
+                  <td>{{ c.email }}<br><span class="dp-sub">{{ c.telefono }}</span></td>
+                  <td><strong>{{ c.tratamiento_nombre }}</strong><br>
+                    <span class="dp-sub">{{ c.categoria }} · {{ c.duracion_minutos }} min</span></td>
+                  <td>{{ c.especialista ?? '—' }}</td>
+                  <td>{{ formatFecha(c.fecha_hora) }}</td>
+                  <td>{{ c.precio ? ('$' + c.precio) : '—' }}</td>
+                  <td><span class="dp-notas">{{ c.notas ?? '—' }}</span></td>
+                  <td><span [class]="'dp-badge dp-badge-' + c.estado">{{ c.estado }}</span></td>
+                  <td class="dp-acciones">
+                    @if (c.estado === 'pendiente') {
+                      <button class="dp-btn-accion dp-btn-confirmar" (click)="confirmar(c.id!)" title="Confirmar">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                      </button>
+                      <button class="dp-btn-accion dp-btn-cancelar" (click)="cancelar(c.id!)" title="Cancelar">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      </button>
+                    }
+                    @if (c.estado === 'confirmada') {
+                      <button class="dp-btn-accion dp-btn-completar" (click)="completar(c.id!)" title="Completar">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                      </button>
+                      <button class="dp-btn-accion dp-btn-cancelar" (click)="cancelar(c.id!)" title="Cancelar">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      </button>
+                    }
+                    @if (c.estado === 'completada' || c.estado === 'cancelada') {
+                      <span class="dp-sin-accion">—</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+
+    <!-- ── VISTA SEMANA ───────────────────────────────────── -->
+    @if (vista() === 'semana') {
+      <div class="dp-cal-semana-wrap">
+        <table class="dp-cal-semana">
+          <thead>
             <tr>
-              <td>{{ c.id }}</td>
-              <td><strong>{{ c.nombre_paciente }}</strong></td>
-              <td>
-                <span>{{ c.email }}</span><br>
-                <span class="dp-sub">{{ c.telefono }}</span>
-              </td>
-              <td>
-                {{ c.tratamiento_nombre }}<br>
-                <span class="dp-sub">{{ c.duracion_minutos }} min</span>
-              </td>
-              <td>{{ formatFecha(c.fecha_hora) }}</td>
-              <td>
-                <span [class]="'dp-badge dp-badge-' + c.estado">{{ c.estado }}</span>
-              </td>
-              <td>
-                @if (c.estado === 'pendiente') {
-                  <button class="dp-btn-cancelar" (click)="cancelar(c.id!)">Cancelar</button>
-                }
-              </td>
+              <th class="dp-hora-col"></th>
+              @for (dia of diasSemana(); track dia) {
+                <th [class.dp-hoy]="esHoy(dia)">{{ nombreDia(dia) }}</th>
+              }
             </tr>
+          </thead>
+          <tbody>
+            @for (hora of horas; track hora) {
+              <tr>
+                <td class="dp-hora-label">{{ hora }}</td>
+                @for (dia of diasSemana(); track dia) {
+                  <td class="dp-slot" [class.dp-hoy]="esHoy(dia)">
+                    @for (cita of citasEnSlot(dia, hora); track cita.id) {
+                      <div [class]="'dp-cal-cita dp-cal-' + cita.estado"
+                           [title]="cita.nombre_paciente + ' — ' + cita.tratamiento_nombre">
+                        <span class="dp-cal-cita-nombre">{{ cita.nombre_paciente }}</span>
+                        <span class="dp-cal-cita-trat">{{ cita.tratamiento_nombre }}</span>
+                        <div class="dp-cal-cita-acciones">
+                          @if (cita.estado === 'pendiente') {
+                            <button (click)="confirmar(cita.id!)" title="Confirmar">✓</button>
+                            <button (click)="cancelar(cita.id!)" title="Cancelar">✕</button>
+                          }
+                          @if (cita.estado === 'confirmada') {
+                            <button (click)="completar(cita.id!)" title="Completar">★</button>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- ── VISTA MES ──────────────────────────────────────── -->
+    @if (vista() === 'mes') {
+      <div class="dp-cal-mes">
+        <div class="dp-cal-mes-head">
+          @for (d of ['Lun','Mar','Mié','Jue','Vie','Sáb']; track d) {
+            <div class="dp-cal-dia-nombre">{{ d }}</div>
           }
-        </tbody>
-      </table>
-    </div>
+        </div>
+        <div class="dp-cal-mes-grid">
+          @for (dia of diasMes(); track $index) {
+            <div class="dp-cal-mes-dia" [class.dp-hoy]="esHoy(dia)" [class.dp-vacio]="!dia">
+              @if (dia) {
+                <span class="dp-cal-num">{{ dia.getDate() }}</span>
+                <div class="dp-cal-mes-citas">
+                  @for (cita of citasEnDia(dia); track cita.id) {
+                    <div [class]="'dp-cal-chip dp-cal-' + cita.estado"
+                         [title]="formatHora(cita.fecha_hora) + ' — ' + cita.nombre_paciente">
+                      {{ formatHora(cita.fecha_hora) }} {{ cita.nombre_paciente }}
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
 
   }
-
 </div>

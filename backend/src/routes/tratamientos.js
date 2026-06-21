@@ -4,7 +4,7 @@ const router  = express.Router();
 const { pool } = require('../db');
 const auth    = require('../middleware/auth');
 
-// ── GET / — Lista pública (solo activos, con joins) ──────────────────
+// ── GET / — Lista pública (solo activos, con joins)──────────────────
 router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
         t.nombre,
         t.descripcion,
         t.duracion_minutos,
-        t.precio prec,
+        t.precio,
         t.imagen_url,
         t.tags,
         t.activo,

@@ -7,18 +7,37 @@
   margin-bottom: 48px;
 }
 
-/* Stats — override to 3 columns */
+/* Stats — override compacto */
 .dp-admin-stats {
-  grid-template-columns: repeat(3, 1fr) !important;
-  max-width: 660px;
-  margin-bottom: 40px;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 100%;
+  margin-bottom: 32px;
 }
 
-.dp-admin-msg {
-  text-align: center;
-  padding: 3rem;
-  max-width: 1100px;
-  margin: 0 auto;
+.dp-admin-stats .dp-stat {
+  background: var(--azul-dark);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: auto;
+}
+
+.dp-admin-stats .sn {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--blanco);
+  line-height: 1;
+}
+
+.dp-admin-stats .sl {
+  font-size: .58rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+  white-space: nowrap;
 }
 
 /* Table */
@@ -111,4 +130,275 @@
 @media(max-width:900px) {
   .dp-admin-page { padding: 48px 16px; }
   .dp-admin-stats { max-width: 100%; }
+}
+
+/* Botones icono */
+.dp-acciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dp-btn-accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.dp-btn-confirmar {
+  background: #d1fae5;
+  color: #065f46;
+}
+.dp-btn-confirmar:hover {
+  background: #065f46;
+  color: #ffffff;
+}
+
+.dp-btn-completar {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.dp-btn-completar:hover {
+  background: #1e40af;
+  color: #ffffff;
+}
+
+.dp-btn-cancelar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  background: #fee2e2;
+  color: #991b1b;
+  cursor: pointer;
+  transition: all .2s;
+  padding: 0;
+  font-family: inherit;
+}
+.dp-btn-cancelar:hover {
+  background: #991b1b;
+  color: #ffffff;
+}
+
+.dp-badge-completada {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.dp-sin-accion {
+  color: var(--gris);
+  font-size: .84rem;
+}
+
+/* ── Toggle vista ─────────────────────────────────────── */
+.dp-vista-toggle {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.dp-vista-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border: 1px solid var(--borde);
+  background: var(--blanco);
+  color: var(--gris);
+  cursor: pointer;
+  transition: all .2s;
+  font-family: 'Inter', sans-serif;
+}
+.dp-vista-toggle button.active,
+.dp-vista-toggle button:hover {
+  background: var(--azul-dark);
+  color: var(--blanco);
+  border-color: var(--azul-dark);
+}
+
+/* ── Navegación calendario ───────────────────────────── */
+.dp-cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.dp-cal-titulo {
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--carbon);
+  min-width: 220px;
+  text-align: center;
+  text-transform: capitalize;
+}
+.dp-cal-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  border: 1px solid var(--borde);
+  background: var(--blanco);
+  color: var(--carbon);
+  cursor: pointer;
+  transition: all .2s;
+  font-family: 'Inter', sans-serif;
+}
+.dp-cal-nav-btn:hover {
+  background: var(--azul-dark);
+  color: var(--blanco);
+  border-color: var(--azul-dark);
+}
+
+/* ── Vista Semana ────────────────────────────────────── */
+.dp-cal-semana-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--borde2);
+  background: var(--blanco);
+}
+.dp-cal-semana {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+.dp-cal-semana thead th {
+  background: var(--azul-dark);
+  color: rgba(255,255,255,.75);
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  padding: 12px 8px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,.08);
+}
+.dp-cal-semana thead th.dp-hoy {
+  background: var(--azul);
+  color: var(--blanco);
+}
+.dp-hora-col { width: 56px !important; }
+.dp-hora-label {
+  font-size: .68rem;
+  color: var(--gris);
+  text-align: right;
+  padding: 4px 10px 4px 4px;
+  white-space: nowrap;
+  vertical-align: top;
+  border-right: 1px solid var(--borde2);
+  border-bottom: 1px solid var(--borde2);
+  background: var(--crema);
+}
+.dp-slot {
+  vertical-align: top;
+  min-height: 40px;
+  padding: 3px;
+  border-right: 1px solid var(--borde2);
+  border-bottom: 1px solid var(--borde2);
+  width: calc((100% - 56px) / 6);
+}
+.dp-slot.dp-hoy { background: rgba(26,95,168,.03); }
+
+/* ── Cita en calendario ──────────────────────────────── */
+.dp-cal-cita {
+  border-radius: 3px;
+  padding: 4px 6px;
+  margin-bottom: 2px;
+  font-size: .67rem;
+  cursor: default;
+}
+.dp-cal-cita-nombre { display: block; font-weight: 500; }
+.dp-cal-cita-trat   { display: block; opacity: .75; font-size: .62rem; }
+.dp-cal-cita-acciones {
+  display: flex;
+  gap: 4px;
+  margin-top: 3px;
+}
+.dp-cal-cita-acciones button {
+  font-size: .65rem;
+  padding: 1px 5px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  background: rgba(0,0,0,.12);
+  color: inherit;
+}
+.dp-cal-pendiente  { background: #fef3c7; color: #92400e; }
+.dp-cal-confirmada { background: var(--azul-light); color: var(--azul); }
+.dp-cal-completada { background: #d1fae5; color: #065f46; }
+.dp-cal-cancelada  { background: #fee2e2; color: #991b1b; opacity: .6; }
+
+/* ── Vista Mes ───────────────────────────────────────── */
+.dp-cal-mes {
+  border: 1px solid var(--borde2);
+  background: var(--blanco);
+}
+.dp-cal-mes-head {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  background: var(--azul-dark);
+}
+.dp-cal-dia-nombre {
+  padding: 10px;
+  font-size: .63rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.65);
+  text-align: center;
+}
+.dp-cal-mes-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+.dp-cal-mes-dia {
+  min-height: 90px;
+  padding: 6px;
+  border-right: 1px solid var(--borde2);
+  border-bottom: 1px solid var(--borde2);
+  vertical-align: top;
+}
+.dp-cal-mes-dia.dp-vacio { background: var(--crema); }
+.dp-cal-mes-dia.dp-hoy   { background: rgba(26,95,168,.04); }
+.dp-cal-num {
+  display: block;
+  font-size: .75rem;
+  font-weight: 500;
+  color: var(--gris);
+  margin-bottom: 4px;
+}
+.dp-cal-mes-dia.dp-hoy .dp-cal-num {
+  background: var(--azul);
+  color: var(--blanco);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .7rem;
+}
+.dp-cal-chip {
+  font-size: .62rem;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
 }

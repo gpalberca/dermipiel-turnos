@@ -18,7 +18,10 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: npx nodemon --legacy-watch src/index.js
+    command: sh -c "npm install && npx nodemon --legacy-watch src/index.js"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
     depends_on:
       - mariadb
 
