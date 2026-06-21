@@ -43,16 +43,16 @@ router.post('/', async (req, res) => {
     // results[0] → estado del slot
     // results[1] → alternativas (solo si no disponible)
     const estado       = results[0][0];
-    const alternativas = results[1]
-      ? results[1].map(r => {
-          const d = new Date(r.slot);
-          return {
-            fecha_hora: d.toISOString().slice(0, 19).replace('T', ' '),
-            direccion:  r.direccion   // 'antes' | 'despues'
-          };
-        })
-      : [];
-
+    const alternativas = Array.isArray(results[1])
+  ? results[1].map(r => {
+      const d = new Date(r.slot);
+      return {
+        fecha_hora: d.toISOString().slice(0, 19).replace('T', ' '),
+        direccion:  r.direccion
+      };
+    })
+  : [];
+  
     // ── Respuesta si está disponible ──────────────────────────────
     if (estado.disponible) {
       return res.json({
