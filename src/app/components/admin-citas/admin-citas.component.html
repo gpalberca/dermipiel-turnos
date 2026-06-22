@@ -21,6 +21,18 @@
       <div class="dp-stat"><div class="sn">{{ citasCanceladas() }}</div><div class="sl">Canceladas</div></div>
     </div>
 
+    <!-- Filtro historial -->
+    <label class="dp-historial-toggle">
+      <span class="dp-historial-track" [class.active]="mostrarHistorial()">
+        <input type="checkbox" [checked]="mostrarHistorial()" (change)="mostrarHistorial.set(!mostrarHistorial())" />
+        <span class="dp-historial-thumb"></span>
+      </span>
+      <span class="dp-historial-label">
+        Mostrar historial
+        <span class="dp-historial-hint">{{ mostrarHistorial() ? "Todas las citas (pasadas y canceladas)" : "Solo desde esta semana, sin canceladas" }}</span>
+      </span>
+    </label>
+
     <!-- Toggle vista -->
     <div class="dp-vista-toggle">
       <button [class.active]="vista() === 'lista'"   (click)="vista.set('lista')">
@@ -53,7 +65,7 @@
 
     <!-- ── VISTA LISTA ─────────────────────────────────────── -->
     @if (vista() === 'lista') {
-      @if (citas().length === 0) {
+      @if (citasFiltradas().length === 0) {
         <p class="dp-body dp-admin-msg">No hay citas registradas aún.</p>
       } @else {
         <div class="dp-tabla-wrap">
@@ -69,7 +81,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (c of citas(); track c.id) {
+              @for (c of citasFiltradas(); track c.id) {
                 <tr>
                   <td class="dp-td-id">{{ c.id }}</td>
                   <td>

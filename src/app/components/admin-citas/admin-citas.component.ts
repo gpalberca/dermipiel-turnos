@@ -14,6 +14,24 @@ export class AdminCitasComponent implements OnInit {
   cargando   = signal(true);
   vista      = signal<'lista' | 'semana' | 'mes'>('lista');
   semanaBase = signal(new Date());
+  mostrarHistorial = signal(false);
+
+  private inicioSemanaActual(): Date {
+    const hoy   = new Date();
+    const lunes = new Date(hoy);
+    lunes.setDate(hoy.getDate() - ((hoy.getDay() + 6) % 7));
+    lunes.setHours(0, 0, 0, 0);
+    return lunes;
+  }
+
+  citasFiltradas = computed(() => {
+    if (this.mostrarHistorial()) return this.citas();
+    const desde = this.inicioSemanaActual();
+    return this.citas().filter(c => {
+      if (c.estado === 'cancelada') return false;
+      return this.parseFechaLocal(c.fecha_hora) >= desde;
+    });
+  });
 
   citasPendientes  = computed(() => this.citas().filter(c => c.estado === 'pendiente').length);
   citasConfirmadas = computed(() => this.citas().filter(c => c.estado === 'confirmada').length);
@@ -88,7 +106,7 @@ export class AdminCitasComponent implements OnInit {
 
   // Citas por slot
  citasEnSlot(dia: Date, hora: string): Cita[] {
-  return this.citas().filter(c => {
+  return this.citasFiltradas().filter(c => {
     const f = this.parseFechaLocal(c.fecha_hora);
     const horaF = `${f.getHours().toString().padStart(2,'0')}:${f.getMinutes().toString().padStart(2,'0')}`;
     return f.toDateString() === dia.toDateString() && horaF === hora;
@@ -97,7 +115,7 @@ export class AdminCitasComponent implements OnInit {
 
 citasEnDia(dia: Date | null): Cita[] {
   if (!dia) return [];
-  return this.citas().filter(c =>
+  return this.citasFiltradas().filter(c =>
     this.parseFechaLocal(c.fecha_hora).toDateString() === dia.toDateString()
   );
 }

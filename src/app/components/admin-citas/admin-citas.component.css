@@ -420,3 +420,60 @@
   text-overflow: ellipsis;
   cursor: default;
 }
+/* ── Filtro historial (toggle switch) ───────────────── */
+.dp-historial-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  user-select: none;
+}
+
+.dp-historial-track {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  background: var(--borde);
+  border-radius: 99px;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+.dp-historial-track input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.dp-historial-track.active {
+  background: var(--azul-dark);
+}
+.dp-historial-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background: var(--blanco);
+  border-radius: 50%;
+  transition: transform .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.dp-historial-track.active .dp-historial-thumb {
+  transform: translateX(18px);
+}
+
+.dp-historial-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--carbon);
+}
+.dp-historial-hint {
+  font-size: .72rem;
+  font-weight: 400;
+  color: var(--gris);
+}
