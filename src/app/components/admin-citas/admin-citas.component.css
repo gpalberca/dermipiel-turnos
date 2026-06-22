@@ -46,12 +46,13 @@
   margin: 0 auto;
   background: var(--blanco);
   border: 1px solid var(--borde2);
-  overflow-x: auto;
+  overflow-x: visible;
 }
 
 .dp-tabla {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .dp-tabla thead {
@@ -67,6 +68,23 @@
   text-transform: uppercase;
   color: rgba(255, 255, 255, .65);
 }
+
+/* Anchos de columna: 5 columnas fijas */
+.dp-tabla th:nth-child(1),
+.dp-tabla td:nth-child(1) { width: 48px; }        /* # */
+.dp-tabla th:nth-child(2),
+.dp-tabla td:nth-child(2) { width: 22%; }          /* Paciente */
+.dp-tabla th:nth-child(3),
+.dp-tabla td:nth-child(3) { width: auto; }         /* Tratamiento — toma el resto */
+.dp-tabla th:nth-child(4),
+.dp-tabla td:nth-child(4) { width: 150px; }        /* Fecha */
+.dp-tabla th:nth-child(5),
+.dp-tabla td:nth-child(5) { width: 120px; }        /* Estado */
+.dp-tabla th:nth-child(6),
+.dp-tabla td:nth-child(6) { width: 90px; }         /* Acciones */
+
+.dp-td-id    { color: var(--gris); }
+.dp-td-fecha { white-space: nowrap; font-size: .82rem; }
 
 .dp-tabla td {
   padding: 14px 18px;

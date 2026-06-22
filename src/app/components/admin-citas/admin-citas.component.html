@@ -60,24 +60,33 @@
           <table class="dp-tabla">
             <thead>
               <tr>
-                <th>#</th><th>Paciente</th><th>Contacto</th>
-                <th>Tratamiento</th><th>Especialista</th>
-                <th>Fecha y hora</th><th>Precio</th>
-                <th>Notas</th><th>Estado</th><th>Acciones</th>
+                <th>#</th>
+                <th>Paciente</th>
+                <th>Tratamiento</th>
+                <th>Fecha y hora</th>
+                <th>Estado</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               @for (c of citas(); track c.id) {
                 <tr>
-                  <td>{{ c.id }}</td>
-                  <td><strong>{{ c.nombre_paciente }}</strong></td>
-                  <td>{{ c.email }}<br><span class="dp-sub">{{ c.telefono }}</span></td>
-                  <td><strong>{{ c.tratamiento_nombre }}</strong><br>
-                    <span class="dp-sub">{{ c.categoria }} · {{ c.duracion_minutos }} min</span></td>
-                  <td>{{ c.especialista ?? '—' }}</td>
-                  <td>{{ formatFecha(c.fecha_hora) }}</td>
-                  <td>{{ c.precio ? ('$' + c.precio) : '—' }}</td>
-                  <td><span class="dp-notas">{{ c.notas ?? '—' }}</span></td>
+                  <td class="dp-td-id">{{ c.id }}</td>
+                  <td>
+                    <strong>{{ c.nombre_paciente }}</strong>
+                    @if (c.email) {
+                      <br><span class="dp-sub">{{ c.email }}</span>
+                    }
+                    @if (c.telefono) {
+                      <br><span class="dp-sub">{{ c.telefono }}</span>
+                    }
+                  </td>
+                  <td>
+                    <strong>{{ c.tratamiento_nombre }}</strong><br>
+                    <span class="dp-sub">{{ c.categoria }} · {{ c.duracion_minutos }} min</span><br>
+                    <span class="dp-sub">{{ c.especialista ?? '—' }} · {{ c.precio ? ('$' + c.precio) : '—' }}</span>
+                  </td>
+                  <td class="dp-td-fecha">{{ formatFecha(c.fecha_hora) }}</td>
                   <td><span [class]="'dp-badge dp-badge-' + c.estado">{{ c.estado }}</span></td>
                   <td class="dp-acciones">
                     @if (c.estado === 'pendiente') {
