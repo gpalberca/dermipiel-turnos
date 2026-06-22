@@ -11,8 +11,8 @@ router.post('/login', (req, res) => {
   if (usuario !== ADM_USER || password !== ADM_PASS) {
     return res.status(401).json({ error: 'Credenciales incorrectas' });
   }
-  const token = jwt.sign({ usuario }, SECRET, { expiresIn: '8h' });
+  const token = jwt.sign({ usuario }, SECRET, { expiresIn: '30d' });
   res.json({ token });
-});
+}); 
 
 module.exports = router;

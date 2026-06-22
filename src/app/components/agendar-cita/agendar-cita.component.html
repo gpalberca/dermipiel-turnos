@@ -68,17 +68,36 @@
           <input type="date" [(ngModel)]="selectedDate" (change)="onDateSelected($event.target.value)" />
         </div>
 
-        @if (selectedDate) {
+       @if (selectedDate && cita.tratamiento_id) {
           <div class="dp-field">
             <label>Horas disponibles <span class="dp-required">*</span></label>
-            <div class="dp-time-grid">
-              @for (hora of availableTimes; track hora) {
-                <button type="button" class="dp-time-slot" [class.active]="selectedTime === hora" (click)="elegirHora(hora)">
-                  {{ hora }}
-                </button>
-              }
-            </div>
+
+            @if (cargandoSlots()) {
+              <p class="dp-body" style="color:var(--gris);padding:12px 0">Verificando disponibilidad...</p>
+            }
+
+            @if (sinAtencion()) {
+              <p class="dp-body" style="color:var(--gris);padding:12px 0">No hay atención este día.</p>
+            }
+
+            @if (!cargandoSlots() && !sinAtencion() && slots().length === 0) {
+              <p class="dp-body" style="color:var(--gris);padding:12px 0">No hay horarios disponibles para este día.</p>
+            }
+
+            @if (slots().length > 0) {
+              <div class="dp-time-grid">
+                @for (slot of slots(); track slot.hora) {
+                  <button type="button"
+                          class="dp-time-slot"
+                          [class.active]="selectedTime === slot.hora"
+                          (click)="elegirHora(slot)">
+                    {{ slot.hora }}
+                  </button>
+                }
+              </div>
+            }
           </div>
+
           @if (selectedTime) {
             <div class="dp-field dp-selected-time">
               <label>Hora elegida</label>

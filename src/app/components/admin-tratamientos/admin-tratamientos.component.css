@@ -99,3 +99,131 @@
     max-width: 100%;
   }
 }
+/* Subtabs */
+.dp-subtab-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 28px;
+  border-bottom: 2px solid var(--borde2);
+  padding-bottom: 0;
+}
+.dp-subtab-bar button {
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  border: none;
+  background: none;
+  color: var(--gris);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  font-family: 'Inter', sans-serif;
+  transition: all .2s;
+}
+.dp-subtab-bar button.active {
+  color: var(--azul);
+  border-bottom-color: var(--azul);
+}
+.dp-subtab-bar button:hover { color: var(--azul); }
+
+/* Formulario especialista */
+.dp-esp-wrap { max-width: 1100px; }
+.dp-esp-header { margin-bottom: 24px; }
+.dp-esp-form {
+  background: var(--crema);
+  border: 1px solid var(--borde2);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.dp-esp-form-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--carbon);
+  margin-bottom: 20px;
+}
+.dp-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.dp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dp-field label {
+  font-size: .7rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gris);
+}
+.dp-field input {
+  padding: 9px 14px;
+  font-size: .84rem;
+  border: 1px solid var(--borde);
+  font-family: 'Inter', sans-serif;
+  color: var(--carbon);
+  background: var(--blanco);
+  outline: none;
+}
+.dp-field input:focus { border-color: var(--azul); }
+.dp-form-acciones { display: flex; gap: 12px; }
+
+/* Badges estado */
+.dp-badge-activo {
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: #d1fae5;
+  color: #065f46;
+  padding: 3px 10px;
+}
+.dp-badge-inactivo {
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 3px 10px;
+}
+.dp-required { color: #991b1b; }
+/* Botones icono — mismo estilo que citas */
+.dp-acciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.dp-btn-accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+}
+.dp-btn-editar {
+  background: var(--azul-light);
+  color: var(--azul);
+}
+.dp-btn-editar:hover {
+  background: var(--azul);
+  color: var(--blanco);
+}
+.dp-btn-eliminar {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.dp-btn-eliminar:hover {
+  background: #991b1b;
+  color: var(--blanco);
+}

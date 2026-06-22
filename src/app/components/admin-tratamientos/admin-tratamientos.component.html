@@ -1,62 +1,174 @@
 <div class="dp dp-trat-admin">
-
   <div class="dp-trat-header">
-    <span class="dp-tag">Gestión de tratamientos</span>
-    <h1 class="dp-h1">Tratamientos <em>disponibles</em></h1>
+    <span class="dp-tag">Gestión</span>
+    <h1 class="dp-h1">Tratamientos <em>y especialistas</em></h1>
     <div class="dp-line"></div>
-    <p class="dp-body">Administra, crea y edita todos los tratamientos de la clínica.</p>
+    <p class="dp-body">Administra los tratamientos y el equipo de especialistas.</p>
   </div>
 
-  @if (cargando()) {
-    <p class="dp-body">Cargando tratamientos...</p>
-  }
-
-  @if (!cargando() && tratamientos().length === 0) {
-    <p class="dp-body">No hay tratamientos registrados aún.</p>
-  }
-
-  @if (!cargando() && tratamientos().length > 0) {
-    <button class="dp-btn" (click)="abrirCrear()" style="margin-bottom: 28px;">
-      + Nuevo Tratamiento
+  <!-- Subtabs -->
+  <div class="dp-subtab-bar">
+    <button [class.active]="subtab() === 'tratamientos'"
+            (click)="subtab.set('tratamientos')">
+      Tratamientos
     </button>
+    <button [class.active]="subtab() === 'especialistas'"
+            (click)="subtab.set('especialistas')">
+      Especialistas
+    </button>
+  </div>
 
-    <div class="dp-tabla-wrap">
-      <table class="dp-tabla">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Duración</th>
-            <th>Precio</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (t of tratamientos(); track t.id) {
-            <tr>
-              <td><strong>{{ t.nombre }}</strong></td>
-              <td>{{ t.descripcion }}</td>
-              <td class="dp-sub">{{ t.duracion_minutos }} min</td>
-              <td>${{ t.precio }}</td>
-              <td>
-                <button class="dp-btn-edit" (click)="abrirEditar(t)">Editar</button>
-                <button class="dp-btn-delete" (click)="eliminar(t.id)">Eliminar</button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+  <!-- ── SUBTAB TRATAMIENTOS ─────────────────────────────── -->
+  @if (subtab() === 'tratamientos') {
+    @if (cargando()) {
+      <p class="dp-body">Cargando tratamientos...</p>
+    }
+    @if (!cargando()) {
+      <div style="margin-bottom:24px">
+        <button class="dp-btn" (click)="abrirCrear()">+ Nuevo Tratamiento</button>
+      </div>
+      @if (tratamientos().length === 0) {
+        <p class="dp-body">No hay tratamientos registrados aún.</p>
+      } @else {
+        <div class="dp-tabla-wrap">
+          <table class="dp-tabla">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Especialista</th>
+                <th>Duración</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (t of tratamientos(); track t.id) {
+                <tr>
+                  <td><strong>{{ t.nombre }}</strong><br>
+                    <span class="dp-sub">{{ t.descripcion }}</span>
+                  </td>
+                  <td>{{ t.categoria ?? '—' }}</td>
+                  <td>{{ t.especialista ?? '—' }}</td>
+                  <td class="dp-sub">{{ t.duracion_minutos }} min</td>
+                  <td>${{ t.precio }}</td>
+                  <td>
+                    <span [class]="t.activo ? 'dp-badge-activo' : 'dp-badge-inactivo'">
+                      {{ t.activo ? 'Activo' : 'Inactivo' }}
+                    </span>
+                  </td>
+                  <td class="dp-acciones">
+                    <button class="dp-btn-accion dp-btn-editar" (click)="abrirEditar(t)" title="Editar">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </button>
+                    <button class="dp-btn-accion dp-btn-eliminar" (click)="eliminar(t.id)" title="Eliminar">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+
+    @if (modalAbierto()) {
+      <app-admin-modal-form
+        [titulo]="esEdicion() ? 'Editar Tratamiento' : 'Nuevo Tratamiento'"
+        [datos]="tratamientoEdicion!"
+        [cargando]="modalCargando()"
+        (guardar)="guardar($event)"
+        (cerrar)="cerrarModal()">
+      </app-admin-modal-form>
+    }
+  }
+
+  <!-- ── SUBTAB ESPECIALISTAS ───────────────────────────── -->
+  @if (subtab() === 'especialistas') {
+    <div class="dp-esp-wrap">
+      <div class="dp-esp-header">
+        <button class="dp-btn" (click)="abrirCrearEsp()">+ Nuevo Especialista</button>
+      </div>
+
+      @if (modoEsp()) {
+        <div class="dp-esp-form">
+          <h4 class="dp-esp-form-titulo">
+            {{ modoEsp() === 'crear' ? 'Nuevo especialista' : 'Editar especialista' }}
+          </h4>
+          <div class="dp-form-grid">
+            <div class="dp-field">
+              <label>Nombres <span class="dp-required">*</span></label>
+              <input type="text" [(ngModel)]="especialistaEdit.nombres" placeholder="Nombres">
+            </div>
+            <div class="dp-field">
+              <label>Apellidos <span class="dp-required">*</span></label>
+              <input type="text" [(ngModel)]="especialistaEdit.apellidos" placeholder="Apellidos">
+            </div>
+            <div class="dp-field">
+              <label>Email</label>
+              <input type="email" [(ngModel)]="especialistaEdit.email" placeholder="correo@ejemplo.com">
+            </div>
+            <div class="dp-field">
+              <label>Teléfono</label>
+              <input type="tel" [(ngModel)]="especialistaEdit.telefono" placeholder="0991234567">
+            </div>
+          </div>
+          <div class="dp-form-acciones">
+            <button class="dp-btn" (click)="guardarEsp()">Guardar</button>
+            <button class="dp-btn-outline" (click)="cancelarEsp()">Cancelar</button>
+          </div>
+        </div>
+      }
+
+      @if (cargandoEsp()) {
+        <p class="dp-body">Cargando especialistas...</p>
+      }
+
+      @if (!cargandoEsp()) {
+        @if (especialistas().length === 0) {
+          <p class="dp-body" style="padding:24px 0;color:var(--gris)">No hay especialistas registrados.</p>
+        } @else {
+          <div class="dp-tabla-wrap">
+            <table class="dp-tabla">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Teléfono</th>
+                  <th>Horario</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (e of especialistas(); track e.id) {
+                  <tr>
+                    <td><strong>{{ e.nombres }} {{ e.apellidos }}</strong></td>
+                    <td>{{ e.email ?? '—' }}</td>
+                    <td>{{ e.telefono ?? '—' }}</td>
+                    <td>
+                      @if (e.hora_inicio) {
+                        <span class="dp-sub">{{ e.hora_inicio }} — {{ e.hora_fin }}</span>
+                      } @else {
+                        <span class="dp-sub">Sin horario</span>
+                      }
+                    </td>
+                    <td class="dp-acciones">
+                      <button class="dp-btn-accion dp-btn-editar" (click)="abrirEditarEsp(e)" title="Editar">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                      </button>
+                      <button class="dp-btn-accion dp-btn-eliminar" (click)="eliminarEsp(e.id)" title="Eliminar">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      }
     </div>
   }
-
-  @if (modalAbierto()) {
-    <app-admin-modal-form
-      [titulo]="esEdicion() ? 'Editar Tratamiento' : 'Nuevo Tratamiento'"
-      [datos]="tratamientoEdicion!"
-      [cargando]="modalCargando()"
-      (guardar)="guardar($event)"
-      (cerrar)="cerrarModal()">
-    </app-admin-modal-form>
-  }
-
 </div>

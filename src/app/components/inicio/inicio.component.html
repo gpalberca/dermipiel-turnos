@@ -14,7 +14,7 @@
         </p>
         <div class="dp-hero-actions">
           <a class="dp-btn" routerLink="/agendar">Reservar cita</a>
-          <a class="dp-btn-outline" routerLink="/agendar">Ver tratamientos</a>
+          <a class="dp-btn-outline" routerLink="." fragment="tratamientos">Ver tratamientos</a>
         </div>
       </div>
       <div class="dp-hero-right">
@@ -47,48 +47,114 @@
     </div>
   </div>
 
-  <!-- TRATAMIENTOS -->
-  <div style="background:var(--crema);padding:0 48px">
-    <div class="dp-trat-wrap">
-      <div class="dp-trat-head">
-        <div>
-          <span class="dp-tag">Nuestros tratamientos</span>
-          <h2 class="dp-h2">Descubre nuestra<br><em>experiencia</em></h2>
-          <div class="dp-line"></div>
-          <p class="dp-body">Ofrecemos tratamientos de vanguardia diseñados para transformar tu piel con resultados visibles desde la primera sesión.</p>
-        </div>
-        <div class="dp-trat-head-right">
-          <a class="dp-btn-outline" routerLink="/agendar">Ver todos los tratamientos</a>
-        </div>
+    <!-- TRATAMIENTOS -->
+<div id="tratamientos" style="background:var(--crema);padding:0 48px 80px">
+  <div class="dp-trat-wrap">
+    <div class="dp-trat-head">
+      <div>
+        <span class="dp-tag">Nuestros tratamientos</span>
+        <h2 class="dp-h2">Descubre nuestra<br><em>experiencia</em></h2>
+        <div class="dp-line"></div>
+        <p class="dp-body">Ofrecemos tratamientos de vanguardia diseñados para transformar tu piel con resultados visibles desde la primera sesión.</p>
+      </div>
+    </div>
+
+    <!-- Buscador y filtros -->
+    <div class="dp-trat-filtros">
+      <div class="dp-buscador">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text"
+               [ngModel]="busqueda()"
+               (ngModelChange)="onBusqueda($event)"
+               placeholder="Buscar tratamiento..."/>
       </div>
 
-      @if (cargando()) {
-        <p class="dp-body" style="padding:2rem 0">Cargando tratamientos...</p>
-      } @else {
-        <div class="dp-grid">
-          @for (t of tratamientos(); track t.id; let i = $index) {
-            <div class="dp-card">
-              <div class="dp-card-img">
-                <img [src]="getImagen(t, i)" [alt]="t.nombre" />
-                @if (getPill(t); as pill) {
-                  <span class="dp-card-pill" [class]="pill.clase">{{ pill.texto }}</span>
-                }
-              </div>
-              <div class="dp-card-body">
-                <h4>{{ t.nombre }}</h4>
-                <p class="dp-body">{{ t.descripcion }}</p>
-                <div class="dp-card-meta">
-                  <span class="dp-meta-dur">⏱ {{ t.duracion_minutos }} min</span>
-                  <span class="dp-meta-precio">${{ t.precio }}</span>
-                </div>
-                <a class="dp-btn" [routerLink]="['/agendar']" [queryParams]="{ tratamiento: t.id }">Reservar cita</a>
-              </div>
+      <div class="dp-categorias-tabs">
+        @for (cat of categorias(); track cat) {
+          <button [class.active]="categoriaActiva() === cat"
+                  (click)="setCategoria(cat)">
+            {{ cat === 'todas' ? 'Todos' : cat }}
+          </button>
+        }
+      </div>
+    </div> 
+
+    @if (cargando()) {
+      <p class="dp-body" style="padding:2rem 0">Cargando tratamientos...</p>
+    } @else if (tratamientosPagina().length === 0) {
+      <div class="dp-sin-resultados">
+        <p class="dp-body">No se encontraron tratamientos para tu búsqueda.</p>
+        <button class="dp-btn-outline" (click)="busqueda.set(''); categoriaActiva.set('todas')">
+          Ver todos
+        </button>
+      </div>
+    } @else {
+      <div class="dp-grid">
+        @for (t of tratamientosPagina(); track t.id; let i = $index) {
+          <div class="dp-card">
+            <div class="dp-card-img">
+              <img [src]="getImagen(t, i)" [alt]="t.nombre"/>
+              @if (getPill(t); as pill) {
+                <span class="dp-card-pill">{{ pill.texto }}</span>
+              }
             </div>
+            <div class="dp-card-body">
+              <h4>{{ t.nombre }}</h4>
+              <p class="dp-body">{{ t.descripcion }}</p>
+              <div class="dp-card-meta">
+                <span class="dp-meta-dur">⏱ {{ t.duracion_minutos }} min</span>
+                <span class="dp-meta-precio">${{ t.precio }}</span>
+              </div>
+              <a class="dp-btn" [routerLink]="['/agendar']"
+                 [queryParams]="{ tratamiento: t.id }">
+                Reservar cita
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Paginación -->
+      @if (totalPaginas() > 1) {
+        <div class="dp-paginacion">
+          <button class="dp-pag-btn"
+                  [disabled]="paginaActual() === 1"
+                  (click)="irPagina(paginaActual() - 1)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+
+          @for (p of paginas(); track p) {
+            <button class="dp-pag-num"
+                    [class.active]="paginaActual() === p"
+                    (click)="irPagina(p)">
+              {{ p }}
+            </button>
           }
+
+          <button class="dp-pag-btn"
+                  [disabled]="paginaActual() === totalPaginas()"
+                  (click)="irPagina(paginaActual() + 1)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+
+          <span class="dp-pag-info">
+            {{ paginaActual() }} de {{ totalPaginas() }}
+          </span>
         </div>
       }
-    </div>
+    }
   </div>
+</div>
 
   <!-- CTA BAR -->
   <div style="background:var(--crema);padding:80px 48px">

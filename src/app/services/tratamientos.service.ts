@@ -4,13 +4,19 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface Tratamiento {
-  id?: number;
-  nombre: string;
-  descripcion: string;
+  id?:              number;
+  nombre:           string;
+  descripcion:      string;
   duracion_minutos: number;
-  precio: number;
-  imagen_url?: string;
-  etiqueta?: string;
+  precio:           number;
+  imagen_url?:      string;
+  etiqueta?:        string;
+  categoria_id?:    number;
+  categoria?:       string;
+  especialista_id?: number;
+  especialista?:    string;
+  tags?:            string;
+  activo?:          number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -22,16 +28,19 @@ export class TratamientosService {
   getTratamientos(): Observable<Tratamiento[]> {
     return this.http.get<Tratamiento[]>(this.apiUrl);
   }
-
+  getTratamientosAdmin(): Observable<Tratamiento[]> {
+    return this.http.get<Tratamiento[]>(`${this.apiUrl}/admin`);
+  }
   crearTratamiento(tratamiento: Tratamiento): Observable<Tratamiento> {
     return this.http.post<Tratamiento>(this.apiUrl, tratamiento);
   }
-
   actualizarTratamiento(id: number, tratamiento: Tratamiento): Observable<Tratamiento> {
     return this.http.put<Tratamiento>(`${this.apiUrl}/${id}`, tratamiento);
   }
-
   eliminarTratamiento(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+  toggleActivo(id: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/toggle`, {});
   }
 }

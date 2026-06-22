@@ -1,39 +1,86 @@
 <div class="dp-modal-overlay" (click)="cerrarForm()">
   <div class="dp-modal-form" (click)="$event.stopPropagation()">
 
-    <h2 class="dp-h2" style="margin-bottom: 24px;">{{ titulo }}</h2>
+    <h2 class="dp-h2" style="margin-bottom:24px">{{ titulo }}</h2>
 
+    <!-- Nombre -->
     <div class="dp-field">
       <label>Nombre del tratamiento <span class="dp-required">*</span></label>
-      <input
-        type="text"
-        [(ngModel)]="formulario().nombre"
-        placeholder="ej: Depilación Láser" />
+      <input type="text" [(ngModel)]="formulario().nombre"
+             placeholder="ej: Depilación Láser"/>
     </div>
 
+    <!-- Descripción -->
     <div class="dp-field">
       <label>Descripción <span class="dp-required">*</span></label>
-      <textarea
-        [(ngModel)]="formulario().descripcion"
-        placeholder="Describe el tratamiento..."
-        style="resize: vertical; min-height: 80px;"></textarea>
+      <textarea [(ngModel)]="formulario().descripcion"
+                placeholder="Describe el tratamiento..."
+                style="resize:vertical;min-height:80px"></textarea>
     </div>
 
+    <!-- Duración y Precio -->
     <div class="dp-field-row">
       <div class="dp-field">
         <label>Duración (minutos) <span class="dp-required">*</span></label>
-        <input
-          type="number"
-          [(ngModel)]="formulario().duracion_minutos"
-          placeholder="30" />
+        <input type="number" [(ngModel)]="formulario().duracion_minutos" placeholder="30"/>
       </div>
       <div class="dp-field">
         <label>Precio ($) <span class="dp-required">*</span></label>
-        <input
-          type="number"
-          [(ngModel)]="formulario().precio"
-          placeholder="0.00" />
+        <input type="number" [(ngModel)]="formulario().precio" placeholder="0.00"/>
       </div>
+    </div>
+
+    <!-- Categoría y Especialista -->
+    <div class="dp-field-row">
+      <div class="dp-field">
+        <label>Categoría</label>
+        <select [(ngModel)]="formulario().categoria_id">
+          <option [ngValue]="undefined">Sin categoría</option>
+          @for (c of categorias(); track c.id) {
+            <option [ngValue]="c.id">{{ c.nombre }}</option>
+          }
+        </select>
+      </div>
+      <div class="dp-field">
+        <label>Especialista</label>
+        <select [(ngModel)]="formulario().especialista_id">
+          <option [ngValue]="undefined">Sin especialista</option>
+          @for (e of especialistas(); track e.id) {
+            <option [ngValue]="e.id">{{ e.nombres }} {{ e.apellidos }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Estado activo -->
+    <div class="dp-field dp-field-check">
+      <label>
+        <input type="checkbox"
+               [checked]="formulario().activo === 1"
+               (change)="formulario.update(f => ({...f, activo: $any($event.target).checked ? 1 : 0}))">
+        Activo (visible en el catálogo público)
+      </label>
+    </div>
+
+    <!-- Imagen desde WordPress -->
+    <div class="dp-field">
+      <label>URL de imagen</label>
+      <input type="text"
+             [ngModel]="formulario().imagen_url"
+             (ngModelChange)="onUrlImagen($event)"
+             placeholder="https://dermipiel.ec/wp-content/uploads/..."/>
+      <span class="dp-img-hint">
+        Copia la URL desde la
+        <a href="https://dermipiel.ec/wp-admin/upload.php" target="_blank">
+          Biblioteca de medios de WordPress ↗
+        </a>
+      </span>
+      @if (previewUrl()) {
+        <div class="dp-img-preview">
+          <img [src]="previewUrl()" alt="Preview"
+               (error)="previewUrl.set(null)">
+        </div>
+      }
     </div>
 
     <div class="dp-modal-buttons">
