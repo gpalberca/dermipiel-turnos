@@ -13,6 +13,17 @@ export class AuthService {
 
   isLoggedIn = computed(() => !!this._token());
 
+  userName = computed(() => {
+    const token = this._token();
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.nombre ?? payload.usuario ?? payload.name ?? null;
+    } catch {
+      return null;
+    }
+  });
+
   constructor(private http: HttpClient, private router: Router) {}
 
   login(usuario: string, password: string) {

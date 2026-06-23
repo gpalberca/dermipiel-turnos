@@ -1,15 +1,32 @@
 <div class="dp dp-admin-container">
+
   <div class="dp-tab-bar">
-    <button class="dp-tab-button" [class.active]="activeTab() === 'citas'"
-            (click)="setTab('citas')">Citas</button>
-    <button class="dp-tab-button" [class.active]="activeTab() === 'tratamientos'"
-            (click)="setTab('tratamientos')">Tratamientos</button>
-    <button class="dp-tab-button" [class.active]="activeTab() === 'horarios'"
-            (click)="setTab('horarios')">Horarios</button>
+    <div class="dp-tab-links">
+      <button class="dp-tab-button" [class.active]="activeTab() === 'citas'"
+              (click)="setTab('citas')">Citas</button>
+      <button class="dp-tab-button" [class.active]="activeTab() === 'tratamientos'"
+              (click)="setTab('tratamientos')">Tratamientos</button>
+      <button class="dp-tab-button" [class.active]="activeTab() === 'horarios'"
+              (click)="setTab('horarios')">Horarios</button>
+    </div>
+    <div class="dp-tab-session">
+      @if (auth.userName()) {
+        <span class="dp-admin-user">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          {{ auth.userName() }}
+        </span>
+      }
+      <button class="dp-admin-logout" (click)="auth.logout()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
   </div>
+
   <div class="dp-tab-content">
     @if (activeTab() === 'citas') { <app-admin-citas></app-admin-citas> }
     @if (activeTab() === 'tratamientos') { <app-admin-tratamientos></app-admin-tratamientos> }
     @if (activeTab() === 'horarios') { <app-admin-horarios></app-admin-horarios> }
   </div>
+
 </div>
