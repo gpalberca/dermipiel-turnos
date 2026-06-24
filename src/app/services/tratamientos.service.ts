@@ -17,6 +17,7 @@ export interface Tratamiento {
   especialista?:    string;
   tags?:            string;
   activo?:          number;
+  visible_agente?:  number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -42,5 +43,8 @@ export class TratamientosService {
   }
   toggleActivo(id: number): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${id}/toggle`, {});
+  }
+  toggleAgente(id: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/toggle-agente`, {});
   }
 }

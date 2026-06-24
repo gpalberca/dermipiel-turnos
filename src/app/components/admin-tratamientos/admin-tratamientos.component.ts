@@ -43,14 +43,14 @@ export class AdminTratamientosComponent implements OnInit {
   // ── Tratamientos ───────────────────────────────────────────
   cargarTratamientos() {
     this.cargando.set(true);
-    this.tratamientosService.getTratamientos().subscribe({
+    this.tratamientosService.getTratamientosAdmin().subscribe({
       next:  data => { this.tratamientos.set(data); this.cargando.set(false); },
       error: ()   => this.cargando.set(false)
     });
   }
 
   abrirCrear() {
-    this.tratamientoEdicion = { nombre: '', descripcion: '', duracion_minutos: 30, precio: 0 };
+    this.tratamientoEdicion = { nombre: '', descripcion: '', duracion_minutos: 30, precio: 0, visible_agente: 0 };
     this.esEdicion.set(false);
     this.modalAbierto.set(true);
   }
@@ -86,6 +86,21 @@ export class AdminTratamientosComponent implements OnInit {
         error: () => alert('Error al eliminar.')
       });
     }
+  }
+
+  toggleAgente(t: Tratamiento) {
+    if (!t.id) return;
+    this.tratamientosService.toggleAgente(t.id).subscribe({
+      next: (res) => {
+        this.tratamientos.update(list =>
+          list.map(item => item.id === t.id
+            ? { ...item, visible_agente: res.visible_agente }
+            : item
+          )
+        );
+      },
+      error: () => alert('Error al actualizar visibilidad del agente.')
+    });
   }
 
   // ── Especialistas ──────────────────────────────────────────

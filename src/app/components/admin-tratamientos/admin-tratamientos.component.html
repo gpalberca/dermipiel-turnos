@@ -8,14 +8,8 @@
 
   <!-- Subtabs -->
   <div class="dp-subtab-bar">
-    <button [class.active]="subtab() === 'tratamientos'"
-            (click)="subtab.set('tratamientos')">
-      Tratamientos
-    </button>
-    <button [class.active]="subtab() === 'especialistas'"
-            (click)="subtab.set('especialistas')">
-      Especialistas
-    </button>
+    <button [class.active]="subtab() === 'tratamientos'" (click)="subtab.set('tratamientos')">Tratamientos</button>
+    <button [class.active]="subtab() === 'especialistas'" (click)="subtab.set('especialistas')">Especialistas</button>
   </div>
 
   <!-- ── SUBTAB TRATAMIENTOS ─────────────────────────────── -->
@@ -40,6 +34,7 @@
                 <th>Duración</th>
                 <th>Precio</th>
                 <th>Estado</th>
+                <th>Agente IA</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -57,6 +52,14 @@
                     <span [class]="t.activo ? 'dp-badge-activo' : 'dp-badge-inactivo'">
                       {{ t.activo ? 'Activo' : 'Inactivo' }}
                     </span>
+                  </td>
+                  <td>
+                    <label class="dp-agente-toggle" [title]="t.visible_agente ? 'Visible en agente' : 'Oculto en agente'">
+                      <span class="dp-agente-track" [class.active]="t.visible_agente">
+                        <input type="checkbox" [checked]="t.visible_agente" (change)="toggleAgente(t)" />
+                        <span class="dp-agente-thumb"></span>
+                      </span>
+                    </label>
                   </td>
                   <td class="dp-acciones">
                     <button class="dp-btn-accion dp-btn-editar" (click)="abrirEditar(t)" title="Editar">
