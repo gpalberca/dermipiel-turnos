@@ -7,14 +7,19 @@ const express = require('express');
 const router  = express.Router();
 const { pool } = require('../db');
 
-/**
- * POST /api/disponibilidad
- * Body: { "fecha_hora": "2026-06-25 10:00:00", "tratamiento_id": 1 }
- */
+// mysql2 con timezone: '-05:00' entrega objetos Date ya en hora Ecuador.
+// Usamos getHours/getMinutes (hora local del proceso Node) para formatear.
+const formatLocalEC = (d) => {
+  // d está en UTC, Ecuador = UTC-5, restamos 5h
+  const ec = new Date(d.getTime() - 5 * 60 * 60 * 1000);
+  const pad = n => String(n).padStart(2, '0');
+  return `${ec.getUTCFullYear()}-${pad(ec.getUTCMonth()+1)}-${pad(ec.getUTCDate())} ` +
+         `${pad(ec.getUTCHours())}:${pad(ec.getUTCMinutes())}:00`;
+};
+
 router.post('/', async (req, res) => {
   const { fecha_hora, tratamiento_id = null } = req.body;
 
-  // ── Validación de entrada ─────────────────────────────────────────
   if (!fecha_hora) {
     return res.status(400).json({
       error: 'El campo fecha_hora es requerido',
@@ -22,7 +27,6 @@ router.post('/', async (req, res) => {
     });
   }
 
-  // Validar formato básico de fecha
   const fechaValida = !isNaN(Date.parse(fecha_hora));
   if (!fechaValida) {
     return res.status(400).json({
@@ -34,26 +38,20 @@ router.post('/', async (req, res) => {
   try {
     conn = await pool.getConnection();
 
-    // Llamar al procedimiento almacenado
     const [results] = await conn.query(
       'CALL sp_verificar_disponibilidad(?, ?)',
       [fecha_hora, tratamiento_id]
     );
 
-    // results[0] → estado del slot
-    // results[1] → alternativas (solo si no disponible)
-    const estado       = results[0][0];
+    const estado = results[0][0];
+
     const alternativas = Array.isArray(results[1])
-  ? results[1].map(r => {
-      const d = new Date(r.slot);
-      return {
-        fecha_hora: d.toISOString().slice(0, 19).replace('T', ' '),
-        direccion:  r.direccion
-      };
-    })
-  : [];
-  
-    // ── Respuesta si está disponible ──────────────────────────────
+      ? results[1].map(r => ({
+          fecha_hora: formatLocalEC(r.slot),
+          direccion:  r.direccion
+        }))
+      : [];
+
     if (estado.disponible) {
       return res.json({
         disponible:            true,
@@ -62,7 +60,6 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // ── Respuesta si NO está disponible ───────────────────────────
     return res.json({
       disponible:            false,
       fecha_hora_solicitada: fecha_hora,
@@ -70,7 +67,7 @@ router.post('/', async (req, res) => {
       alternativas: {
         antes:   alternativas.filter(a => a.direccion === 'antes')
                              .map(a => a.fecha_hora)
-                             .reverse(),          // orden cronológico
+                             .reverse(),
         despues: alternativas.filter(a => a.direccion === 'despues')
                              .map(a => a.fecha_hora)
       }
@@ -87,10 +84,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-/**
- * GET /api/disponibilidad/slots?fecha=2026-06-25&tratamiento_id=1
- * Devuelve todos los slots disponibles del día (útil para el calendario Angular)
- */
 router.get('/slots', async (req, res) => {
   const { fecha, tratamiento_id = null } = req.query;
 
@@ -102,7 +95,6 @@ router.get('/slots', async (req, res) => {
   try {
     conn = await pool.getConnection();
 
-    // Obtener horario del día
     const diaSemana = ['domingo','lunes','martes','miercoles',
                        'jueves','viernes','sabado'][new Date(fecha + 'T12:00:00').getDay()];
 
@@ -121,22 +113,26 @@ router.get('/slots', async (req, res) => {
     const { hora_inicio, hora_fin, intervalo_min } = horarios[0];
     const slots = [];
 
-    // Generar todos los slots del día y verificar cada uno
-    let current = new Date(`${fecha}T${hora_inicio}`);
-    const fin   = new Date(`${fecha}T${hora_fin}`);
+    const [hIni, mIni] = hora_inicio.split(':').map(Number);
+    const [hFin, mFin] = hora_fin.split(':').map(Number);
+    let totalMinIni   = hIni * 60 + mIni;
+    const totalMinFin = hFin * 60 + mFin;
 
-    while (current < fin) {
-      const fechaHora = current.toISOString().slice(0, 19).replace('T', ' ');
-      const [check]   = await conn.query(
+    while (totalMinIni < totalMinFin) {
+      const hh = String(Math.floor(totalMinIni / 60)).padStart(2, '0');
+      const mm = String(totalMinIni % 60).padStart(2, '0');
+      const fechaHora = `${fecha} ${hh}:${mm}:00`;
+
+      const [check] = await conn.query(
         'SELECT fn_slot_disponible(?) AS disponible',
         [fechaHora]
       );
       slots.push({
-        hora:        current.toTimeString().slice(0, 5),
+        hora:       `${hh}:${mm}`,
         fecha_hora:  fechaHora,
         disponible:  check[0].disponible === 1
       });
-      current = new Date(current.getTime() + intervalo_min * 60000);
+      totalMinIni += intervalo_min;
     }
 
     return res.json({ fecha, dia: diaSemana, slots });

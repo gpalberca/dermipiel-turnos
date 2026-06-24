@@ -29,11 +29,13 @@ services:
     image: mariadb:10.6
     ports:
       - "3306:3306"
+    command: --default-time-zone=America/Guayaquil
     environment:
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=DermiPiel2024!
+      - TZ= America/Guayaquil
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
