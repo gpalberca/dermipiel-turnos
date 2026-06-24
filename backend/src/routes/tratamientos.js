@@ -4,6 +4,30 @@ const router  = express.Router();
 const { pool } = require('../db');
 const auth    = require('../middleware/auth');
 
+// ── GET /agente — Solo para el agente IA ─────────────────────────────
+router.get('/agente', async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT
+        t.id,
+        t.nombre,
+        t.descripcion,
+        t.duracion_minutos,
+        t.precio,
+        c.nombre AS categoria,
+        CONCAT(e.nombres, ' ', e.apellidos) AS especialista
+      FROM tratamientos t
+      LEFT JOIN categorias   c ON c.id = t.categoria_id
+      LEFT JOIN especialistas e ON e.id = t.especialista_id
+      WHERE t.activo = 1 AND t.visible_agente = 1
+      ORDER BY c.nombre, t.nombre
+    `);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ── GET / — Lista pública (solo activos) ─────────────────────────────
 router.get('/', async (req, res) => {
   try {
