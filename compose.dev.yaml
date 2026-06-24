@@ -24,6 +24,8 @@ services:
       - /app/node_modules
     depends_on:
       - mariadb
+    environment:
+      - TZ=America/Guayaquil
 
   mariadb:
     image: mariadb:10.6
@@ -35,7 +37,7 @@ services:
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=DermiPiel2024!
-      - TZ= America/Guayaquil
+      - TZ=America/Guayaquil
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql

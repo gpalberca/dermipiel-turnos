@@ -7,10 +7,9 @@ const express = require('express');
 const router  = express.Router();
 const { pool } = require('../db');
 
-// mysql2 con timezone: '-05:00' entrega objetos Date ya en hora Ecuador.
-// Usamos getHours/getMinutes (hora local del proceso Node) para formatear.
+// mysql2 con timezone: '-05:00' entrega objetos Date en UTC.
+// Restamos 5h para obtener hora Ecuador.
 const formatLocalEC = (d) => {
-  // d está en UTC, Ecuador = UTC-5, restamos 5h
   const ec = new Date(d.getTime() - 5 * 60 * 60 * 1000);
   const pad = n => String(n).padStart(2, '0');
   return `${ec.getUTCFullYear()}-${pad(ec.getUTCMonth()+1)}-${pad(ec.getUTCDate())} ` +
@@ -115,13 +114,23 @@ router.get('/slots', async (req, res) => {
 
     const [hIni, mIni] = hora_inicio.split(':').map(Number);
     const [hFin, mFin] = hora_fin.split(':').map(Number);
-    let totalMinIni   = hIni * 60 + mIni;
+    let totalMin      = hIni * 60 + mIni;
     const totalMinFin = hFin * 60 + mFin;
 
-    while (totalMinIni < totalMinFin) {
-      const hh = String(Math.floor(totalMinIni / 60)).padStart(2, '0');
-      const mm = String(totalMinIni % 60).padStart(2, '0');
+    // Hora actual — Node.js ya está en TZ America/Guayaquil en producción
+    const ahora = new Date();
+
+    while (totalMin < totalMinFin) {
+      const hh = String(Math.floor(totalMin / 60)).padStart(2, '0');
+      const mm = String(totalMin % 60).padStart(2, '0');
       const fechaHora = `${fecha} ${hh}:${mm}:00`;
+
+      // Filtrar slots pasados para el día de hoy
+      const slotDate = new Date(`${fecha}T${hh}:${mm}:00`);
+      if (slotDate <= ahora) {
+        totalMin += intervalo_min;
+        continue;
+      }
 
       const [check] = await conn.query(
         'SELECT fn_slot_disponible(?) AS disponible',
@@ -132,7 +141,7 @@ router.get('/slots', async (req, res) => {
         fecha_hora:  fechaHora,
         disponible:  check[0].disponible === 1
       });
-      totalMinIni += intervalo_min;
+      totalMin += intervalo_min;
     }
 
     return res.json({ fecha, dia: diaSemana, slots });
