@@ -16,6 +16,7 @@ app.use('/api/horarios',    require('./routes/horarios'));
 app.use('/api/excepciones', require('./routes/excepciones'));
 app.use('/api/especialistas', require('./routes/especialistas'));
 app.use('/api/categorias', require('./routes/categorias'));
+app.use('/api/clientes', require('./routes/clientes'));
 
 // Health check
 app.get('/api/health', (req, res) => {

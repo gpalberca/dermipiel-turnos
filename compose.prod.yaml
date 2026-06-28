@@ -5,6 +5,10 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     restart: always
+    env_file:
+      - .env.prod
+    environment:
+      - TZ=America/Guayaquil
     networks:
       - turnos-network
       - dermipiel-network

@@ -1,0 +1,224 @@
+<!-- src/app/components/admin-clientes/admin-clientes.component.html -->
+
+<div class="dp-clientes-module">
+
+  <!-- Stats -->
+  <div class="dp-admin-stats">
+    <div class="dp-stat">
+      <div class="sn">{{ total() }}</div>
+      <div class="sl">Total clientes</div>
+    </div>
+    <div class="dp-stat">
+      <div class="sn">{{ totalWhatsapp() }}</div>
+      <div class="sl">WhatsApp</div>
+    </div>
+    <div class="dp-stat">
+      <div class="sn">{{ totalWeb() }}</div>
+      <div class="sl">Web</div>
+    </div>
+    <div class="dp-stat">
+      <div class="sn">{{ totalActivos() }}</div>
+      <div class="sl">Activos</div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="dp-toolbar">
+    <div class="dp-search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        type="text"
+        placeholder="Buscar por nombre, teléfono o email…"
+        [value]="busqueda()"
+        (input)="onBusqueda($any($event.target).value)"
+      />
+    </div>
+
+    <select (change)="onFiltroFuente($any($event.target).value)">
+      <option value="">Todos los orígenes</option>
+      <option value="whatsapp">WhatsApp</option>
+      <option value="web">Web</option>
+      <option value="manual">Manual</option>
+    </select>
+
+    <select (change)="onFiltroActivo($any($event.target).value)">
+      <option value="">Todos los estados</option>
+      <option value="1">Activos</option>
+      <option value="0">Inactivos</option>
+    </select>
+
+    <button class="dp-btn" (click)="abrirNuevo()">
+      + Nuevo cliente
+    </button>
+  </div>
+
+  <!-- Tabla -->
+  <div class="dp-tabla-wrap">
+
+    @if (cargando()) {
+      <div class="dp-loading">Cargando…</div>
+    } @else {
+      <table class="dp-tabla">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Origen</th>
+            <th>Citas</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of clientes(); track c.id) {
+            <tr (click)="abrirEditar(c)">
+              <td class="dp-td-id">{{ c.id }}</td>
+              <td>
+                <div class="dp-paciente-cell">
+                  <strong>{{ c.nombre }}</strong>
+                  <span class="dp-sub">{{ c.email || 'sin email' }}</span>
+                  <span class="dp-sub">{{ c.telefono }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="dp-badge"
+                  [class.dp-badge-whatsapp]="c.fuente === 'whatsapp'"
+                  [class.dp-badge-web]="c.fuente === 'web'"
+                  [class.dp-badge-manual]="c.fuente === 'manual'">
+                  {{ c.fuente }}
+                </span>
+              </td>
+              <td style="text-align:center">{{ c.total_citas }}</td>
+              <td>
+                <span class="dp-badge"
+                  [class.dp-badge-activo]="c.activo"
+                  [class.dp-badge-inactivo]="!c.activo">
+                  {{ c.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <div class="dp-acciones" (click)="$event.stopPropagation()">
+                  <button class="dp-btn-accion dp-btn-editar"
+                    title="Editar" (click)="abrirEditar(c)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </button>
+                  <button class="dp-btn-accion"
+                    [class.dp-btn-toggle-off]="c.activo"
+                    [class.dp-btn-toggle-on]="!c.activo"
+                    [title]="c.activo ? 'Desactivar' : 'Activar'"
+                    (click)="toggleActivo(c, $event)">
+                    @if (c.activo) {
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    } @else {
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    }
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="dp-empty">
+                No hay clientes que coincidan con los filtros
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  <!-- Paginador -->
+  @if (paginas() > 1) {
+    <div class="dp-paginador">
+      <button (click)="cambiarPagina(pagina() - 1)" [disabled]="pagina() === 1">
+        &#8592;
+      </button>
+      @for (p of paginasArray(); track p) {
+        <button [class.active]="p === pagina()" (click)="cambiarPagina(p)">
+          {{ p }}
+        </button>
+      }
+      <button (click)="cambiarPagina(pagina() + 1)" [disabled]="pagina() === paginas()">
+        &#8594;
+      </button>
+      <span class="dp-pag-info">{{ clientes().length }} de {{ total() }} clientes</span>
+    </div>
+  }
+
+</div>
+
+<!-- Modal -->
+@if (modalAbierto()) {
+  <div class="dp-modal-overlay" (click)="cerrarModal()">
+    <div class="dp-modal" (click)="$event.stopPropagation()">
+
+      <div class="dp-modal-header">
+        <div>
+          <div class="dp-modal-title">
+            {{ esNuevo() ? 'Nuevo cliente' : formNombre }}
+          </div>
+          <div class="dp-modal-subtitle">
+            {{ esNuevo() ? 'Completa los datos del paciente' : 'Editar información del cliente' }}
+          </div>
+        </div>
+        <button class="dp-btn-close" (click)="cerrarModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="dp-field">
+        <label>Nombre completo *</label>
+        <input type="text" [(ngModel)]="formNombre" placeholder="Ej: María García" />
+      </div>
+
+      <div class="dp-field-row2">
+        <div class="dp-field">
+          <label>Teléfono *</label>
+          <input type="text" [(ngModel)]="formTelefono"
+            placeholder="0987 654 321" [disabled]="!esNuevo()" />
+        </div>
+        <div class="dp-field">
+          <label>Origen</label>
+          <select [(ngModel)]="formFuente" [disabled]="!esNuevo()">
+            <option value="manual">Manual</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="web">Web</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="dp-field">
+        <label>Email (opcional)</label>
+        <input type="email" [(ngModel)]="formEmail" placeholder="paciente@email.com" />
+      </div>
+
+      <div class="dp-field">
+        <label>Notas internas</label>
+        <input type="text" [(ngModel)]="formNotas"
+          placeholder="Alergias, preferencias, referencias…" />
+      </div>
+
+      <div class="dp-modal-footer">
+        <button class="dp-btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        <button class="dp-btn"
+          (click)="guardar()"
+          [disabled]="guardando() || !formNombre || !formTelefono">
+          {{ guardando() ? 'Guardando…' : 'Guardar cliente' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
