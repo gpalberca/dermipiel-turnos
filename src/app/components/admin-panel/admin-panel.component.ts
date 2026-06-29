@@ -5,6 +5,8 @@ import { AdminTratamientosComponent } from '../admin-tratamientos/admin-tratamie
 import { AdminHorariosComponent } from '../admin-horarios/admin-horarios.component';
 import { AdminClientesComponent } from '../admin-clientes/admin-clientes.component';
 import { AuthService } from '../../services/auth.service';
+import { AdminConversacionesComponent } from '../admin-conversaciones/admin-conversaciones.component';
+
 
 @Component({
   selector: 'app-admin-panel',
@@ -15,6 +17,7 @@ import { AuthService } from '../../services/auth.service';
     AdminTratamientosComponent,
     AdminHorariosComponent,
     AdminClientesComponent,
+    AdminConversacionesComponent,
   ],
   templateUrl: './admin-panel.component.html',
   styleUrl: './admin-panel.component.css'
@@ -22,9 +25,9 @@ import { AuthService } from '../../services/auth.service';
 export class AdminPanelComponent {
   constructor(public auth: AuthService) {}
 
-  activeTab = signal<'citas' | 'tratamientos' | 'horarios' | 'clientes'>('citas');
+  activeTab = signal<'citas' | 'tratamientos' | 'horarios' | 'clientes' | 'conversaciones'>('citas');
 
-  setTab(tab: 'citas' | 'tratamientos' | 'horarios' | 'clientes') {
+  setTab(tab: 'citas' | 'tratamientos' | 'horarios' | 'clientes' | 'conversaciones') {
     this.activeTab.set(tab);
   }
 }

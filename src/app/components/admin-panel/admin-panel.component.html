@@ -10,6 +10,10 @@
               (click)="setTab('tratamientos')">Tratamientos</button>
       <button class="dp-tab-button" [class.active]="activeTab() === 'horarios'"
               (click)="setTab('horarios')">Horarios</button>
+      <button class="dp-tab-button" [class.active]="activeTab() === 'conversaciones'"
+        (click)="setTab('conversaciones')">Conversaciones</button>
+
+
       
     </div>
     ...
@@ -20,6 +24,7 @@
     @if (activeTab() === 'tratamientos')  { <app-admin-tratamientos></app-admin-tratamientos> }
     @if (activeTab() === 'horarios')      { <app-admin-horarios></app-admin-horarios> }
     @if (activeTab() === 'clientes')      { <app-admin-clientes></app-admin-clientes> }
+    @if (activeTab() === 'conversaciones') { <app-admin-conversaciones></app-admin-conversaciones> }
   </div>
 
 </div>
