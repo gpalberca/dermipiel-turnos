@@ -9,6 +9,7 @@ router.get('/', auth, async (req, res) => {
     const [rows] = await pool.query(`
       SELECT
         c.id,
+        c.cliente_id,
         c.nombre_paciente,
         c.email,
         c.telefono,
@@ -49,7 +50,6 @@ router.patch('/:id/confirmar', auth, async (req, res) => {
   }
 });
 
-
 // PATCH /:id/completar
 router.patch('/:id/completar', auth, async (req, res) => {
   try {
@@ -63,9 +63,18 @@ router.patch('/:id/completar', auth, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 // Crear una nueva cita
 router.post('/', async (req, res) => {
-  const { nombre_paciente, email, telefono, tratamiento_id, fecha_hora, notas = null } = req.body;
+  const {
+    nombre_paciente,
+    email,
+    telefono,
+    tratamiento_id,
+    fecha_hora,
+    cliente_id = null,   // ← opcional, lo envía n8n después del upsert_cliente
+    notas = null
+  } = req.body;
 
   // ── Validación de campos obligatorios ──────────────────────────
   if (!nombre_paciente || !tratamiento_id || !fecha_hora) {
@@ -85,7 +94,6 @@ router.post('/', async (req, res) => {
     );
 
     if (!check[0].disponible) {
-      // Buscar alternativas
       const [alts] = await conn.query(
         'CALL sp_verificar_disponibilidad(?, ?)',
         [fecha_hora, tratamiento_id]
@@ -110,9 +118,9 @@ router.post('/', async (req, res) => {
     // ── Insertar la cita ───────────────────────────────────────
     const [result] = await conn.query(`
       INSERT INTO citas
-        (nombre_paciente, email, telefono, tratamiento_id, fecha_hora, estado, notas)
-      VALUES (?, ?, ?, ?, ?, 'pendiente', ?)
-    `, [nombre_paciente, email, telefono, tratamiento_id, fecha_hora, notas]);
+        (cliente_id, nombre_paciente, email, telefono, tratamiento_id, fecha_hora, estado, notas)
+      VALUES (?, ?, ?, ?, ?, ?, 'pendiente', ?)
+    `, [cliente_id, nombre_paciente, email, telefono, tratamiento_id, fecha_hora, notas]);
 
     // Devolver la cita creada con datos del tratamiento
     const [rows] = await conn.query(`
