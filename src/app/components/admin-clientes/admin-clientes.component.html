@@ -66,6 +66,7 @@
             <th>#</th>
             <th>Cliente</th>
             <th>Origen</th>
+            <th>Nivel</th>
             <th>Citas</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -89,6 +90,13 @@
                   [class.dp-badge-manual]="c.fuente === 'manual'">
                   {{ c.fuente }}
                 </span>
+              </td>
+              <td>
+                @if (c.nivel) {
+                  <span class="dp-badge" [ngClass]="nivelClase(c.nivel)">{{ c.nivel }}</span>
+                } @else {
+                  <span class="dp-sin-accion">—</span>
+                }
               </td>
               <td style="text-align:center">{{ c.total_citas }}</td>
               <td>
@@ -202,6 +210,17 @@
       <div class="dp-field">
         <label>Email (opcional)</label>
         <input type="email" [(ngModel)]="formEmail" placeholder="paciente@email.com" />
+      </div>
+
+      <div class="dp-field">
+        <label>Nivel</label>
+        <select [(ngModel)]="formNivel">
+          <option value="">Sin clasificar</option>
+          <option value="Frio">Frío</option>
+          <option value="Tibio">Tibio</option>
+          <option value="Caliente">Caliente</option>
+          <option value="Convertido">Convertido</option>
+        </select>
       </div>
 
       <div class="dp-field">

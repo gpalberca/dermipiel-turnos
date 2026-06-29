@@ -37,12 +37,23 @@ export class AdminClientesComponent implements OnInit {
   formTelefono = '';
   formEmail    = '';
   formFuente: 'web' | 'whatsapp' | 'manual' = 'manual';
+  formNivel    = '';
   formNotas    = '';
 
   // ── Stats computadas ─────────────────────────────────
   totalActivos    = computed(() => this.clientes().filter(c => c.activo).length);
   totalWhatsapp   = computed(() => this.clientes().filter(c => c.fuente === 'whatsapp').length);
   totalWeb        = computed(() => this.clientes().filter(c => c.fuente === 'web').length);
+
+  nivelClase(nivel: string): string {
+    const map: Record<string, string> = {
+      'Frio':       'dp-badge-inactivo',
+      'Tibio':      'dp-badge-web',
+      'Caliente':   'dp-badge-whatsapp',
+      'Convertido': 'dp-badge-activo'
+    };
+    return map[nivel] ?? 'dp-badge-manual';
+  }
 
   // ── Init ─────────────────────────────────────────────
   ngOnInit(): void {
@@ -108,6 +119,7 @@ export class AdminClientesComponent implements OnInit {
     this.formTelefono = c.telefono;
     this.formEmail    = c.email    ?? '';
     this.formFuente   = c.fuente;
+    this.formNivel    = c.nivel    ?? '';
     this.formNotas    = c.notas    ?? '';
     this.modalAbierto.set(true);
   }
@@ -122,6 +134,7 @@ export class AdminClientesComponent implements OnInit {
     this.formTelefono = '';
     this.formEmail    = '';
     this.formFuente   = 'manual';
+    this.formNivel    = '';
     this.formNotas    = '';
   }
 
@@ -134,6 +147,7 @@ export class AdminClientesComponent implements OnInit {
       telefono: this.formTelefono,
       email:    this.formEmail   || null,
       fuente:   this.formFuente,
+      nivel:    this.formNivel   || null,
       notas:    this.formNotas   || null
     };
 

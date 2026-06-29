@@ -62,6 +62,7 @@ router.get('/', verifyToken, async (req, res) => {
          c.telefono,
          c.email,
          c.fuente,
+         c.nivel,
          c.notas,
          c.activo,
          c.created_at,
@@ -129,7 +130,7 @@ router.get('/:id', verifyToken, async (req, res) => {
 // ─────────────────────────────────────────────
 router.post('/', authDual, async (req, res) => {
   try {
-    const { nombre, telefono, email = null, fuente = 'manual', notas = null } = req.body;
+    const { nombre, telefono, email = null, fuente = 'manual', nivel = null, notas = null } = req.body;
 
     if (!nombre || !telefono) {
       return res.status(400).json({ error: 'nombre y telefono son requeridos' });
@@ -139,8 +140,8 @@ router.post('/', authDual, async (req, res) => {
     const fuenteFinal = req.source === 'n8n' ? 'whatsapp' : fuente;
 
     // Upsert via procedimiento almacenado
-    await pool.query('CALL upsert_cliente(?, ?, ?, ?, ?, @o_id, @o_nuevo)', [
-      nombre, telefono, email, fuenteFinal, notas
+    await pool.query('CALL upsert_cliente(?, ?, ?, ?, ?, ?, @o_id, @o_nuevo)', [
+      nombre, telefono, email, fuenteFinal, nivel, notas
     ]);
     const [[result]] = await pool.query('SELECT @o_id AS id, @o_nuevo AS es_nuevo');
 
@@ -164,7 +165,7 @@ router.post('/', authDual, async (req, res) => {
 // ─────────────────────────────────────────────
 router.put('/:id', verifyToken, async (req, res) => {
   try {
-    const { nombre, email, notas } = req.body;
+    const { nombre, email, nivel, notas } = req.body;
 
     const [[existing]] = await pool.query(
       'SELECT id FROM clientes WHERE id = ?', [req.params.id]
@@ -174,10 +175,11 @@ router.put('/:id', verifyToken, async (req, res) => {
     await pool.query(
       `UPDATE clientes
           SET nombre = COALESCE(?, nombre),
+              nivel  = COALESCE(?, nivel),
               email  = COALESCE(?, email),
               notas  = COALESCE(?, notas)
         WHERE id = ?`,
-      [nombre ?? null, email ?? null, notas ?? null, req.params.id]
+      [nombre ?? null, nivel ?? null, email ?? null, notas ?? null, req.params.id]
     );
 
     res.json({ message: 'Cliente actualizado' });

@@ -1,4 +1,4 @@
-    // src/app/services/clientes.service.ts
+// src/app/services/clientes.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -10,6 +10,7 @@ export interface Cliente {
   telefono:          string;
   email:             string | null;
   fuente:            'web' | 'whatsapp' | 'manual';
+  nivel:             string | null;
   notas:             string | null;
   activo:            number;
   created_at:        string;
